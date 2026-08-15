@@ -1,0 +1,39 @@
+{
+  "name": "gym-saas",
+  "private": true,
+  "workspaces": [
+    "apps/web",
+    "apps/mobile",
+    "apps/desktop/frontend",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "build:web": "npm run build -w @gym-saas/web",
+    "build:cloud-api": "node ./scripts/build-cloud-api.mjs",
+    "build:desktop": "node ./scripts/build-desktop.mjs",
+    "build:desktop:mac": "node ./scripts/build-desktop.mjs darwin/arm64",
+    "build:desktop:linux": "node ./scripts/build-desktop.mjs linux/amd64",
+    "build:desktop:windows": "node ./scripts/build-desktop.mjs windows/amd64",
+    "build:all": "node ./scripts/build-all.mjs",
+    "build:all:mac": "node ./scripts/build-all.mjs darwin/arm64",
+    "build:all:linux": "node ./scripts/build-all.mjs linux/amd64",
+    "build:all:windows": "node ./scripts/build-all.mjs windows/amd64",
+    "publish:desktop:mac": "node ./scripts/publish-desktop-mac.mjs",
+    "release": "node ./scripts/release-cli.mjs",
+    "deploy": "node ./scripts/deploy-cloud-api.mjs",
+    "deploy:guided": "node ./scripts/deploy-cloud-api.mjs --guided",
+    "lint": "npm run lint:ts && npm run lint:go",
+    "lint:ts": "oxlint --react-plugin apps packages scripts",
+    "lint:go": "node ./scripts/lint-go.mjs",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "dev:desktop": "node ./scripts/dev-stack.mjs desktop",
+    "dev:web": "node ./scripts/dev-stack.mjs web",
+    "dev:all": "node ./scripts/dev-stack.mjs desktop web",
+    "dev:desktop-frontend": "npm run dev -w @gym-saas/desktop-frontend",
+    "dev:mobile": "npm run dev -w @gym-saas/mobile"
+  },
+  "devDependencies": {
+    "oxlint": "^1.75.0"
+  }
+}

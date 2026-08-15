@@ -1,0 +1,70 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: gym-saas cloud API
+
+Parameters:
+  ReleaseVersion:
+    Type: String
+    Default: "0.1.1"
+  ReleaseMinimumSupportedVersion:
+    Type: String
+    Default: "0.1.0"
+  ReleaseNotes:
+    Type: String
+    Default: "Initial updater manifest for local-first gym-saas. Placeholder release URLs are wired per desktop platform."
+  DarwinArm64Url:
+    Type: String
+    Default: "https://example.com/releases/gym-saas-desktop-darwin-arm64.zip"
+  DarwinArm64Checksum:
+    Type: String
+    Default: "replace-me-darwin-arm64"
+  WindowsAmd64Url:
+    Type: String
+    Default: "https://example.com/releases/gym-saas-desktop-windows-amd64.exe"
+  WindowsAmd64Checksum:
+    Type: String
+    Default: "replace-me-windows-amd64"
+  LinuxAmd64Url:
+    Type: String
+    Default: "https://example.com/releases/gym-saas-desktop-linux-amd64.tar.gz"
+  LinuxAmd64Checksum:
+    Type: String
+    Default: "replace-me-linux-amd64"
+
+Resources:
+  GymSaasCloudApiFunction:
+    Type: AWS::Serverless::Function
+    Metadata:
+      BuildMethod: go1.x
+    Properties:
+      CodeUri: lambda/
+      Handler: bootstrap
+      Runtime: provided.al2023
+      Architectures:
+        - arm64
+      Environment:
+        Variables:
+          RELEASE_VERSION: !Ref ReleaseVersion
+          RELEASE_MINIMUM_SUPPORTED_VERSION: !Ref ReleaseMinimumSupportedVersion
+          RELEASE_NOTES: !Ref ReleaseNotes
+          RELEASE_DARWIN_ARM64_URL: !Ref DarwinArm64Url
+          RELEASE_DARWIN_ARM64_CHECKSUM: !Ref DarwinArm64Checksum
+          RELEASE_WINDOWS_AMD64_URL: !Ref WindowsAmd64Url
+          RELEASE_WINDOWS_AMD64_CHECKSUM: !Ref WindowsAmd64Checksum
+          RELEASE_LINUX_AMD64_URL: !Ref LinuxAmd64Url
+          RELEASE_LINUX_AMD64_CHECKSUM: !Ref LinuxAmd64Checksum
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+          AllowMethods:
+            - GET
+          AllowHeaders:
+            - content-type
+
+Outputs:
+  GymSaasCloudApiFunctionUrl:
+    Description: gym-saas cloud API function URL
+    Value:
+      Fn::GetAtt: GymSaasCloudApiFunctionUrl.FunctionUrl

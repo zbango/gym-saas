@@ -1,0 +1,11 @@
+{
+  "ignorePatterns": [
+    "node_modules/**",
+    ".gocache/**",
+    ".omx/**",
+    "apps/**/dist/**",
+    "apps/**/build/**",
+    "apps/**/.aws-sam/**",
+    "apps/desktop/frontend/wailsjs/**"
+  ]
+}

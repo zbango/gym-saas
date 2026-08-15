@@ -1,0 +1,18 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "gym-saas desktop",
+  "outputfilename": "gym-saas-desktop",
+  "frontend:install": "cd ../.. && npm install",
+  "frontend:build": "cd ../.. && npm run build -w @gym-saas/desktop-frontend",
+  "frontend:dev:serverUrl": "http://localhost:5174",
+  "frontend:dir": "frontend",
+  "author": {
+    "name": "gym-saas"
+  },
+  "info": {
+    "productName": "gym-saas desktop",
+    "productVersion": "0.1.2",
+    "companyName": "gym-saas",
+    "comments": "Local-first gym desktop"
+  }
+}
