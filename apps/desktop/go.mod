@@ -3,7 +3,6 @@ module github.com/zbango/gym-saas/apps/desktop
 go 1.23.0
 
 require (
-	github.com/google/uuid v1.6.0
 	github.com/wailsapp/wails/v2 v2.10.1
 	github.com/zbango/gym-saas/go/core v0.0.0
 	modernc.org/sqlite v1.39.0

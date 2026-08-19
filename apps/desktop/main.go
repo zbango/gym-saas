@@ -35,7 +35,7 @@ func main() {
 		desktopVersion = override
 	}
 
-	app := NewApp(store, updater.NewClient(desktopVersion), desktopVersion)
+	app := NewApp(updater.NewClient(desktopVersion), desktopVersion)
 
 	err = wails.Run(&options.App{
 		Title:  "gym-saas desktop",

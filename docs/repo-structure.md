@@ -83,6 +83,7 @@ Current responsibilities:
 - hello-world CRUD UI for the local SQLite slice
 - update-check UI trigger
 - update modal/download/install UI
+- shared theme provider and switcher integration
 
 Rules:
 
@@ -146,12 +147,14 @@ Shared React UI components for multiple frontend hosts.
 Current example:
 
 - [packages/ui/src/index.tsx](/Users/zbango/Documents/ChatGPT/gym/packages/ui/src/index.tsx)
+- [packages/ui/src/theme.tsx](/Users/zbango/Documents/ChatGPT/gym/packages/ui/src/theme.tsx)
 
 Rules:
 
 - Presentation only.
 - No host-specific runtime logic.
 - No backend/business rules.
+- Theme provider and theme persistence logic for frontend hosts lives here.
 
 ### `packages/shared`
 
@@ -162,12 +165,30 @@ Current contents include:
 - app constants
 - update manifest types
 - hello record DTO
+- theme definitions and tokens
 
 Rules:
 
 - Keep this package safe for web, desktop frontend, and mobile.
 - Do not place Node-only or Wails-only logic here.
 - Do not turn this into a dumping ground for random utilities.
+
+### Shared theming
+
+The current theme system is split like this:
+
+- `packages/shared`
+  theme names, labels, and token definitions
+- `packages/ui`
+  theme provider, CSS variable injection, persistence, and switcher
+- frontend hosts
+  consume CSS variables and themed UI primitives
+
+Current behavior:
+
+- desktop and web share the same theme engine
+- the shell UI no longer depends on hardcoded colors for its main surfaces
+- selected theme persists locally per host
 
 ### `go/core`
 
@@ -232,11 +253,12 @@ That is why:
 
 The desktop app embeds SQLite through Go. The gym owner should not install SQL manually.
 
-Current proof slice:
+Current V2 database slice:
 
-- one `hello_records` table
-- create/list/update/delete
-- Wails frontend -> Go -> SQLite -> Wails frontend roundtrip
+- embedded, versioned SQL migrations
+- transactional migration records with checksum validation
+- foreign keys, WAL journaling, and busy-timeout configuration
+- operational core tables for gyms, members, plans, memberships, payments, and visits
 
 Current files:
 
@@ -246,7 +268,7 @@ Current files:
 What this proves:
 
 - the app can create its own local DB file
-- local migrations/bootstrap can be owned by the product
+- local schema migrations are owned by the product and protected from drift
 - the installer does not need an external database dependency
 
 ## Desktop Updates

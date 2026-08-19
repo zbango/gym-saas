@@ -1,4 +1,4 @@
-import { buildCloudApiUrl, type HelloRecord, type UpdateManifest } from "@gym-saas/shared";
+import { buildCloudApiUrl, type UpdateManifest } from "@gym-saas/shared";
 
 export type DownloadedPackage = {
   fileName: string;
@@ -7,10 +7,6 @@ export type DownloadedPackage = {
 
 type DesktopBindings = {
   GetDesktopVersion(): Promise<string>;
-  GetHelloRecords(): Promise<HelloRecord[]>;
-  CreateHelloRecord(name: string): Promise<HelloRecord>;
-  UpdateHelloRecord(id: string, name: string): Promise<HelloRecord>;
-  DeleteHelloRecord(id: string): Promise<void>;
   CheckForUpdates(manifestURL?: string): Promise<UpdateManifest | null>;
   OpenExternalURL(url: string): Promise<void>;
   DownloadUpdatePackage(url: string, checksum: string): Promise<DownloadedPackage>;
@@ -43,42 +39,6 @@ export async function getDesktopVersion(): Promise<string | null> {
   }
 
   return binding.GetDesktopVersion();
-}
-
-export async function listHelloRecords(): Promise<HelloRecord[]> {
-  const binding = app();
-  if (!binding) {
-    return [];
-  }
-
-  return binding.GetHelloRecords();
-}
-
-export async function createHelloRecord(name: string): Promise<HelloRecord | null> {
-  const binding = app();
-  if (!binding) {
-    return null;
-  }
-
-  return binding.CreateHelloRecord(name);
-}
-
-export async function updateHelloRecord(id: string, name: string): Promise<HelloRecord | null> {
-  const binding = app();
-  if (!binding) {
-    return null;
-  }
-
-  return binding.UpdateHelloRecord(id, name);
-}
-
-export async function deleteHelloRecord(id: string): Promise<void> {
-  const binding = app();
-  if (!binding) {
-    return;
-  }
-
-  await binding.DeleteHelloRecord(id);
 }
 
 export async function checkForUpdates(): Promise<UpdateManifest | null> {

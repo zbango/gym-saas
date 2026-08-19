@@ -11,19 +11,17 @@ import (
 	"time"
 
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
-	"github.com/zbango/gym-saas/apps/desktop/internal/sqlite"
 	"github.com/zbango/gym-saas/apps/desktop/internal/updater"
 )
 
 type App struct {
 	ctx     context.Context
-	records *sqlite.Store
 	updates *updater.Client
 	version string
 }
 
-func NewApp(records *sqlite.Store, updates *updater.Client, version string) *App {
-	return &App{records: records, updates: updates, version: version}
+func NewApp(updates *updater.Client, version string) *App {
+	return &App{updates: updates, version: version}
 }
 
 func (a *App) startup(ctx context.Context) {
@@ -36,22 +34,6 @@ func (a *App) Greet(name string) string {
 
 func (a *App) GetDesktopVersion() string {
 	return a.version
-}
-
-func (a *App) GetHelloRecords() ([]sqlite.HelloRecord, error) {
-	return a.records.List()
-}
-
-func (a *App) CreateHelloRecord(name string) (sqlite.HelloRecord, error) {
-	return a.records.Create(name)
-}
-
-func (a *App) UpdateHelloRecord(id, name string) (sqlite.HelloRecord, error) {
-	return a.records.Update(id, name)
-}
-
-func (a *App) DeleteHelloRecord(id string) error {
-	return a.records.Delete(id)
 }
 
 func (a *App) CheckForUpdates(manifestURL string) (*updater.Manifest, error) {

@@ -7,7 +7,7 @@ gym-saas is a mixed-language monorepo for a local-first gym product:
 - `apps/web`: React + Vite web host
 - `apps/mobile`: Expo placeholder host
 - `packages/ui`: shared React UI
-- `packages/shared`: shared frontend-safe types and constants
+- `packages/shared`: shared frontend-safe types, constants, and theme definitions
 - `go/core`: shared Go code for host apps
 
 ## Requirements
@@ -109,6 +109,23 @@ GYM_SAAS_DESKTOP_VERSION_OVERRIDE=0.1.1
 ```
 
 Then restart `dev:desktop` or `dev:all`.
+
+## Shared Themes
+
+Desktop and web now share the same theming engine.
+
+Current theme capabilities:
+
+- theme definitions live in `packages/shared`
+- theme provider, CSS variable injection, persistence, and switcher live in `packages/ui`
+- shell UI uses theme tokens instead of hardcoded shell colors
+- selected theme persists per host through local storage
+
+Current built-in themes:
+
+- `Classic Ledger`
+- `Midnight Terminal`
+- `Atelier Bloom`
 
 ## Desktop Packaging
 
