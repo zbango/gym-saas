@@ -1,8 +1,8 @@
 # <Task ID> — <Task title>
 
-**Status:** Proposed  
-**Roadmap:** <roadmap task or supporting task>  
-**Owner:** Product owner + Codex  
+**Status:** Proposed
+**Roadmap:** <roadmap task or supporting task>
+**Owner:** Product owner + Codex
 **Opened:** YYYY-MM-DD
 
 ## Objective
@@ -13,15 +13,15 @@ State the single outcome this task must achieve.
 
 ### In scope
 
-- 
+-
 
 ### Out of scope
 
-- 
+-
 
 ## Plan
 
-1. 
+1.
 
 ## Acceptance criteria
 
@@ -41,11 +41,11 @@ Fill this after implementation.
 
 ### Changed files
 
-- 
+-
 
 ### Simplifications made
 
-- 
+-
 
 ### Automated verification
 
@@ -56,20 +56,20 @@ result:
 
 ### Known limitations / follow-ups
 
-- 
+-
 
 ## Human acceptance
 
 ### Manual check
 
-1. 
+1.
 
-**Expected result:** 
+**Expected result:**
 
 ### Owner result
 
 - [ ] Accepted
 - [ ] Changes requested
 
-**Date:**  
-**Notes:** 
+**Date:**
+**Notes:**

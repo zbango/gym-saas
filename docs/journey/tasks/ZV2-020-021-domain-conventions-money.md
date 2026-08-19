@@ -1,8 +1,8 @@
 # ZV2-020/021 — Domain conventions and Money
 
-**Status:** Historical—reviewable  
-**Roadmap:** ZV2-020, ZV2-021  
-**Owner:** Product owner + Codex  
+**Status:** Historical—reviewable
+**Roadmap:** ZV2-020, ZV2-021
+**Owner:** Product owner + Codex
 **Completed:** 2026-08-19
 
 ## Objective
@@ -66,5 +66,5 @@ infrastructure dependency.
 - [ ] Accepted
 - [ ] Changes requested
 
-**Date:**  
-**Notes:** 
+**Date:**
+**Notes:**

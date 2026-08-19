@@ -1,8 +1,8 @@
 # JRN-000 — Human-in-the-loop delivery protocol
 
-**Status:** Accepted  
-**Roadmap:** Supporting delivery task  
-**Owner:** Product owner + Codex  
+**Status:** Accepted
+**Roadmap:** Supporting delivery task
+**Owner:** Product owner + Codex
 **Opened:** 2026-08-19
 
 ## Objective
@@ -99,5 +99,5 @@ history, and you can approve or request changes directly on the task page.
 - [x] Accepted
 - [ ] Changes requested
 
-**Date:** 2026-08-19  
+**Date:** 2026-08-19
 **Notes:** Owner approved the protocol in chat.

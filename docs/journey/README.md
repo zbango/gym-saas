@@ -37,7 +37,8 @@ does not silently advance the roadmap.
 | Task | Status | Purpose |
 |---|---|---|
 | [JRN-000](./tasks/JRN-000-delivery-protocol.md) | Accepted | Establish this delivery and acceptance process. |
-| [ZV2-022](./tasks/ZV2-022-gym-branch-identity.md) | Awaiting human acceptance | Gym and Branch domain identity model. |
+| [ZV2-022](./tasks/ZV2-022-gym-identity.md) | Accepted | Single-location Gym domain identity model. |
+| [ZV2-023](./tasks/ZV2-023-member-domain.md) | Implementing | Member identity and status domain model. |
 | [ZV2-043](./tasks/ZV2-043-sqlite-migration-runner.md) | Historical—reviewable | Embedded, transactional SQLite migration runner. |
 | [ZV2-020-021](./tasks/ZV2-020-021-domain-conventions-money.md) | Historical—reviewable | UUID/UTC conventions and integer-cent Money. |
 
