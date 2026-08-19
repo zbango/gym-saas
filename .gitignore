@@ -21,3 +21,4 @@ apps/cloud-api/build/
 release/
 apps/desktop/frontend/dist/
 apps/desktop/build/
+migrations_v1/
