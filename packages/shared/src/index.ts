@@ -1,12 +1,7 @@
 export const appName = "gym-saas";
 export const desktopVersion = "0.1.2";
 
-export type HelloRecord = {
-  id: string;
-  name: string;
-  createdAt: string;
-  updatedAt: string;
-};
+export * from "./theme";
 
 export type UpdateAsset = {
   os: string;
