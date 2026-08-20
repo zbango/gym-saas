@@ -12,16 +12,42 @@ import (
 
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 	"github.com/zbango/gym-saas/apps/desktop/internal/updater"
+	"github.com/zbango/gym-saas/go/core/application"
+	"github.com/zbango/gym-saas/go/core/domain"
 )
 
 type App struct {
 	ctx     context.Context
 	updates *updater.Client
 	version string
+	members *application.MemberService
 }
 
-func NewApp(updates *updater.Client, version string) *App {
-	return &App{updates: updates, version: version}
+func NewApp(updates *updater.Client, version string, members *application.MemberService) *App {
+	return &App{updates: updates, version: version, members: members}
+}
+
+type MemberInput struct {
+	FirstName            string `json:"firstName"`
+	LastName             string `json:"lastName"`
+	Email                string `json:"email"`
+	Phone                string `json:"phone"`
+	IdentificationNumber string `json:"identificationNumber"`
+	DateOfBirth          string `json:"dateOfBirth"`
+	Address              string `json:"address"`
+	Status               string `json:"status"`
+}
+
+type Member struct {
+	ID                   string `json:"id"`
+	FirstName            string `json:"firstName"`
+	LastName             string `json:"lastName"`
+	Email                string `json:"email"`
+	Phone                string `json:"phone"`
+	IdentificationNumber string `json:"identificationNumber"`
+	DateOfBirth          string `json:"dateOfBirth"`
+	Address              string `json:"address"`
+	Status               string `json:"status"`
 }
 
 func (a *App) startup(ctx context.Context) {
@@ -34,6 +60,59 @@ func (a *App) Greet(name string) string {
 
 func (a *App) GetDesktopVersion() string {
 	return a.version
+}
+
+func (a *App) ListMembers() ([]Member, error) {
+	members, err := a.members.List(a.requestContext())
+	if err != nil {
+		return nil, err
+	}
+	result := make([]Member, 0, len(members))
+	for _, member := range members {
+		result = append(result, memberView(member))
+	}
+	return result, nil
+}
+
+func (a *App) CreateMember(input MemberInput) (Member, error) {
+	member, err := a.members.Create(a.requestContext(), application.MemberInput(input))
+	if err != nil {
+		return Member{}, err
+	}
+	return memberView(member), nil
+}
+
+func (a *App) UpdateMember(id string, input MemberInput) (Member, error) {
+	member, err := a.members.Update(a.requestContext(), id, application.MemberInput(input))
+	if err != nil {
+		return Member{}, err
+	}
+	return memberView(member), nil
+}
+
+func (a *App) ArchiveMember(id string) error {
+	return a.members.Archive(a.requestContext(), id)
+}
+
+func (a *App) requestContext() context.Context {
+	if a.ctx != nil {
+		return a.ctx
+	}
+	return context.Background()
+}
+
+func memberView(member domain.Member) Member {
+	return Member{
+		ID:                   string(member.ID()),
+		FirstName:            member.FirstName(),
+		LastName:             member.LastName(),
+		Email:                member.Email(),
+		Phone:                member.Phone(),
+		IdentificationNumber: member.IdentificationNumber(),
+		DateOfBirth:          member.DateOfBirth(),
+		Address:              member.Address(),
+		Status:               string(member.Status()),
+	}
 }
 
 func (a *App) CheckForUpdates(manifestURL string) (*updater.Manifest, error) {

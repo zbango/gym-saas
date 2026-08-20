@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"time"
 
+	"github.com/zbango/gym-saas/go/core/domain"
 	_ "modernc.org/sqlite"
 )
 
@@ -67,6 +68,21 @@ func Open(path string) (*Store, error) {
 
 func (s *Store) Close() error {
 	return s.db.Close()
+}
+
+// EnsureGym creates the desktop's local tenant on its first launch. Existing
+// records are left untouched so member data always remains associated with the
+// same tenant across restarts.
+func (s *Store) EnsureGym(ctx context.Context, gym domain.Gym) error {
+	_, err := s.db.ExecContext(ctx, `
+INSERT INTO gyms (id, name, timezone, created_at, updated_at)
+VALUES (?, ?, ?, ?, ?)
+ON CONFLICT (id) DO NOTHING
+`, gym.ID(), gym.Name(), gym.Timezone(), domain.FormatTimestamp(gym.CreatedAt()), domain.FormatTimestamp(gym.UpdatedAt()))
+	if err != nil {
+		return fmt.Errorf("ensure gym: %w", err)
+	}
+	return nil
 }
 
 func databaseURL(path string) string {

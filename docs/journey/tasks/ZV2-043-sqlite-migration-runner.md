@@ -1,8 +1,8 @@
 # ZV2-043 — SQLite migration runner
 
-**Status:** Historical—reviewable  
-**Roadmap:** ZV2-043  
-**Owner:** Product owner + Codex  
+**Status:** Historical—reviewable
+**Roadmap:** ZV2-043
+**Owner:** Product owner + Codex
 **Completed:** 2026-08-19
 
 ## Objective
@@ -24,7 +24,7 @@ migration runner.
 
 - [x] A fresh desktop database receives all V2 first-slice tables exactly once.
 - [x] A failing migration rolls back both schema changes and its migration
-  record.
+      record.
 - [x] Foreign keys are enforced and WAL/busy-timeout settings are verified.
 - [x] Applied migration drift blocks startup.
 
@@ -66,5 +66,5 @@ V2 operational tables plus `schema_migrations`.
 - [ ] Accepted
 - [ ] Changes requested
 
-**Date:**  
-**Notes:** 
+**Date:**
+**Notes:**

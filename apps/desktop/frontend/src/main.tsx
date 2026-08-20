@@ -13,11 +13,12 @@ import {
   downloadUpdatePackage,
   getDesktopVersion,
   installDownloadedPackage,
-  isDesktopApp,
   openPath,
   openExternalURL,
   type DownloadedPackage
-} from "./wails";
+} from "./features/updates/api";
+import { MemberPanel } from "./features/members/MemberPanel";
+import { isDesktopApp } from "./platform/wails";
 
 type UpdateState =
   | "idle"
@@ -131,6 +132,8 @@ function App() {
           <ThemeSwitcher />
         </div>
       </Panel>
+
+      <MemberPanel />
 
       <Panel title="Desktop Host" eyebrow={`${appName} ${desktopVersion}`}>
         <p>Wails desktop shell with embedded SQLite migration support and updater check.</p>

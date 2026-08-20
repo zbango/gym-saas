@@ -1,6 +1,6 @@
 # ZV2-023 — Member domain model
 
-**Status:** Awaiting human acceptance
+**Status:** Accepted
 **Roadmap:** ZV2-023
 **Owner:** Product owner + Codex
 **Opened:** 2026-08-19
@@ -106,8 +106,8 @@ group.
 
 ### Owner result
 
-- [ ] Accepted
+- [x] Accepted
 - [x] Changes requested
 
 **Date:** 2026-08-19
-**Notes:** Initial change request resolved; awaiting recheck.
+**Notes:** Initial change request resolved and accepted by the owner in chat.
