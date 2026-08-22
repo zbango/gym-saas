@@ -39,3 +39,4 @@ export { ChevronDownIcon } from './ChevronDownIcon';
 export { ChevronUpIcon } from './ChevronUpIcon';
 export { HistoryIcon } from './HistoryIcon';
 export { AwardIcon } from './AwardIcon';
+export { MoreVerticalIcon } from './MoreVerticalIcon';

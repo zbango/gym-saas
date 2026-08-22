@@ -55,6 +55,7 @@ The living inventory is [V1 visual inventory](./v1-visual-inventory.md).
 | [JRN-001](./tasks/JRN-001-zeus-login-visual-mock.md) | Awaiting human acceptance | Zeus-themed visual mock of the V1 desktop login screen. |
 | [JRN-002](./tasks/JRN-002-super-admin-dashboard-visual-mock.md) | Awaiting human acceptance | Super-admin dashboard shell and full visual navigation mock. |
 | [JRN-003](./tasks/JRN-003-shared-icon-cleanup.md) | Awaiting human acceptance | Normalize the shared V1 SVG icon API and remove Tailwind coupling. |
+| [JRN-004](./tasks/JRN-004-member-list-visual-mock.md) | Awaiting human acceptance | Member screen mock plus reusable page-header, metric-card, and table primitives. |
 
 Tasks completed before this protocol are recorded as historical: their
 automated evidence and a repeatable manual check are preserved, but they do

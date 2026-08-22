@@ -27,6 +27,7 @@ import {
   UsersIcon
 } from "@gym-saas/ui";
 import logoSrc from "../../assets/logo.png";
+import { MemberListPage } from "../members/MemberListPage";
 import "./dashboard-page.css";
 
 type DashboardPageProps = {
@@ -167,7 +168,7 @@ export function DashboardPage({ onSignOut }: DashboardPageProps) {
           </div>
         </header>
 
-        {activeRoute === "dashboard" ? <DashboardContent /> : <MockRoute title={activeLabel} />}
+        {activeRoute === "dashboard" ? <DashboardContent /> : activeRoute === "members" ? <MemberListPage /> : <MockRoute title={activeLabel} />}
       </section>
     </main>
   );

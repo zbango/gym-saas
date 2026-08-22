@@ -2,6 +2,9 @@ import type { CSSProperties, PropsWithChildren } from "react";
 
 export * from "./theme";
 export * from "./icons";
+export * from "./DataTable";
+export * from "./MetricCard";
+export * from "./PageHeader";
 
 export function Panel(props: PropsWithChildren<{ title: string; eyebrow?: string }>) {
   return (
