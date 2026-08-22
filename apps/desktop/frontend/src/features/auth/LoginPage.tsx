@@ -1,4 +1,5 @@
 import { useState, type FormEvent, type ReactNode } from "react";
+import { EyeIcon, EyeOffIcon, LockIcon, UserIcon } from "@gym-saas/ui";
 import logoSrc from "../../assets/logo.png";
 import "./login-page.css";
 
@@ -74,7 +75,7 @@ export function LoginPage({
                 aria-label={passwordVisible ? "Ocultar contraseña" : "Mostrar contraseña"}
                 aria-pressed={passwordVisible}
               >
-                <EyeIcon crossed={passwordVisible} />
+                {passwordVisible ? <EyeOffIcon /> : <EyeIcon />}
               </button>
             }
           />
@@ -140,33 +141,5 @@ function AuthField({
         {endAdornment}
       </span>
     </div>
-  );
-}
-
-function UserIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
-      <circle cx="12" cy="8" r="3.5" />
-      <path d="M4.5 20c.8-4.1 3.3-6.2 7.5-6.2s6.7 2.1 7.5 6.2" />
-    </svg>
-  );
-}
-
-function LockIcon() {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
-      <rect x="5.5" y="10" width="13" height="10" rx="1.6" />
-      <path d="M8.5 10V7.4a3.5 3.5 0 0 1 7 0V10M12 14v2.4" />
-    </svg>
-  );
-}
-
-function EyeIcon({ crossed }: { crossed: boolean }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.9" aria-hidden="true">
-      <path d="M2.7 12s3.1-5.2 9.3-5.2 9.3 5.2 9.3 5.2-3.1 5.2-9.3 5.2S2.7 12 2.7 12Z" />
-      <circle cx="12" cy="12" r="2.5" />
-      {crossed ? <path d="m4 4 16 16" /> : null}
-    </svg>
   );
 }

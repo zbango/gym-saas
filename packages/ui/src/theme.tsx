@@ -18,33 +18,35 @@ type ThemeContextValue = {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-export function ThemeProvider(props: PropsWithChildren<{ initialTheme?: ThemeName }>) {
+export function ThemeProvider(props: PropsWithChildren<{ initialTheme?: ThemeName; fixedTheme?: ThemeName }>) {
   const [themeName, setThemeName] = useState<ThemeName>(() => {
     if (typeof window === "undefined") {
-      return props.initialTheme ?? defaultThemeName;
+      return props.fixedTheme ?? props.initialTheme ?? defaultThemeName;
     }
 
     const stored = window.localStorage.getItem(themeStorageKey);
-    return getThemeDefinition(stored ?? props.initialTheme ?? defaultThemeName).name;
+    return getThemeDefinition(props.fixedTheme ?? stored ?? props.initialTheme ?? defaultThemeName).name;
   });
+
+  const activeThemeName = props.fixedTheme ?? themeName;
 
   useEffect(() => {
     if (typeof window === "undefined") {
       return;
     }
 
-    window.localStorage.setItem(themeStorageKey, themeName);
-  }, [themeName]);
+    window.localStorage.setItem(themeStorageKey, activeThemeName);
+  }, [activeThemeName]);
 
   const value = useMemo<ThemeContextValue>(() => {
-    const theme = getThemeDefinition(themeName);
+    const theme = getThemeDefinition(activeThemeName);
     return {
       theme,
       themeName: theme.name,
       themes: listThemes(),
       setThemeName
     };
-  }, [themeName]);
+  }, [activeThemeName]);
 
   return (
     <ThemeContext.Provider value={value}>
@@ -114,6 +116,9 @@ function themeVariables(theme: ThemeDefinition): CSSProperties {
     "--gs-background": tokens.background,
     "--gs-background-accent": tokens.backgroundAccent,
     "--gs-background-ambient": tokens.backgroundAmbient,
+    "--gs-workspace-background": tokens.workspaceBackground,
+    "--gs-sidebar": tokens.sidebar,
+    "--gs-sidebar-text": tokens.sidebarText,
     "--gs-surface": tokens.surface,
     "--gs-surface-elevated": tokens.surfaceElevated,
     "--gs-border": tokens.border,
@@ -130,6 +135,10 @@ function themeVariables(theme: ThemeDefinition): CSSProperties {
     "--gs-button-primary-text": tokens.buttonPrimaryText,
     "--gs-button-secondary-background": tokens.buttonSecondaryBackground,
     "--gs-button-secondary-text": tokens.buttonSecondaryText,
-    "--gs-overlay": tokens.overlay
+    "--gs-overlay": tokens.overlay,
+    "--gs-success": tokens.success,
+    "--gs-success-soft": tokens.successSoft,
+    "--gs-danger": tokens.danger,
+    "--gs-danger-soft": tokens.dangerSoft
   } as CSSProperties;
 }
