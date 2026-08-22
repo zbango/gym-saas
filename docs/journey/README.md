@@ -56,6 +56,8 @@ The living inventory is [V1 visual inventory](./v1-visual-inventory.md).
 | [JRN-002](./tasks/JRN-002-super-admin-dashboard-visual-mock.md) | Awaiting human acceptance | Super-admin dashboard shell and full visual navigation mock. |
 | [JRN-003](./tasks/JRN-003-shared-icon-cleanup.md) | Awaiting human acceptance | Normalize the shared V1 SVG icon API and remove Tailwind coupling. |
 | [JRN-004](./tasks/JRN-004-member-list-visual-mock.md) | Awaiting human acceptance | Member screen mock plus reusable page-header, metric-card, and table primitives. |
+| [JRN-005](./tasks/JRN-005-membership-plan-list.md) | Awaiting human acceptance | Membership-plan visual cards backed by the desktop read API. |
+| [JRN-006](./tasks/JRN-006-dashboard-route-outlet.md) | Awaiting human acceptance | Replace dashboard conditional routing with an extensible route-view registry. |
 
 Tasks completed before this protocol are recorded as historical: their
 automated evidence and a repeatable manual check are preserved, but they do
