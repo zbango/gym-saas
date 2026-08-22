@@ -9,7 +9,7 @@ and the UI is refreshed from the result.
 ```text
 React feature component
   -> feature API client
-  -> Wails App method (delivery adapter)
+  -> feature-specific Wails API (delivery adapter)
   -> application service (use case)
   -> repository port
   -> SQLite repository adapter
@@ -27,10 +27,16 @@ domain objects when it reads data.
 For Members, the concrete route is:
 
 ```text
-MemberPanel -> features/members/api.ts -> App.CreateMember
+MemberPanel -> features/members/api.ts -> MemberAPI.CreateMember
 -> application.MemberService.Create -> ports.MemberRepository.Create
 -> sqlite.MemberRepository.Create -> members table
 ```
+
+Membership Plans use the same route through `MembershipPlanPanel`, the
+feature-local Plans API, `MembershipPlanAPI.CreateMembershipPlan`, and
+`application.MembershipPlanService`. The domain requires every visit plan to
+include both a visit limit and a calendar duration; a future purchased
+membership will snapshot those values and expire when either bound is reached.
 
 After a mutation, `useMembers` reloads the list through the same route in
 reverse (`ListMembers`), so the screen reflects database state rather than a
@@ -43,7 +49,7 @@ locally guessed update. Archive is a soft deletion: the repository sets
 | --- | --- | --- |
 | React feature | Form state, presentation, explicit UI confirmation | Business validation or SQL |
 | Feature API client | Typed calls for one Wails feature | Other feature bindings or UI state |
-| Wails `App` | Request/response DTO conversion and context handoff | Business rules |
+| Wails feature API | Request/response DTO conversion and context handoff for one feature | Business rules or other features' use cases |
 | Application service | Use-case sequencing, tenant scope, domain validation, error context | SQLite or Wails imports |
 | Domain | Invariants and valid `Member` construction | HTTP, SQLite, Wails, or device imports |
 | Repository port | Storage contract needed by an application service | SQL implementation details |
@@ -51,19 +57,23 @@ locally guessed update. Archive is a soft deletion: the repository sets
 
 ## Wails binding organization
 
-Wails provides one global namespace (`window.go.main.App`), but feature code
-does not need to collect every method in one `wails.ts` file.
+Wails provides one global namespace, but the desktop binds separate API
+objects: `window.go.main.MemberAPI`, `window.go.main.MembershipPlanAPI`, and
+`window.go.main.DesktopAPI`. This prevents a growing all-purpose `App` object.
 
 - `src/platform/wails.ts` is the small, framework-specific global boundary.
 - `src/features/members/api.ts` owns only Member calls and Member transport
   types.
+- `src/features/plans/api.ts` owns only Membership Plan calls and transport
+  types.
 - `src/features/updates/api.ts` owns only updater calls and types.
 - A new feature gets its own `features/<feature>/api.ts`; it does not extend a
-  global list of bindings.
+  global list of bindings or an existing API object.
 
-When Wails-generated TypeScript bindings are adopted, place them behind the
-same feature API clients. Components should not import generated bindings
-directly, which keeps a generated-code change from spreading through the UI.
+Wails generates the low-level modules under `frontend/wailsjs/` during desktop
+development and production builds. Feature API clients wrap and type those
+generated modules; components do not import them directly. Do not edit the
+generated files, and do not recreate a hand-written global binding list.
 
 ## Mutation/query state: no RTK Query yet
 

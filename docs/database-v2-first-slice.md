@@ -8,9 +8,10 @@ This document defines the first real V2 operational schema for:
 - `payments`
 - `visits`
 
-The SQL source of truth is:
+The SQL source of truth is the ordered migration set:
 
 - [001_v2_operational_core.sql](/Users/zbango/Documents/ChatGPT/gym/apps/desktop/internal/sqlite/migrations/001_v2_operational_core.sql)
+- [002_visit_plan_expiry.sql](/Users/zbango/Documents/ChatGPT/gym/apps/desktop/internal/sqlite/migrations/002_visit_plan_expiry.sql)
 
 ## Runtime migration behavior
 
@@ -26,6 +27,10 @@ its sole `hello_records` table. It can receive the V2 baseline unchanged;
 the obsolete table is retained but no longer used. V1 databases remain
 unmanaged and are intentionally refused until the dedicated read-only V1-to-V2
 migration is implemented.
+
+Migration 002 refuses to invent an expiry for any legacy visit plan or visit
+membership. That failure is deliberate: an operator must choose the missing
+calendar window rather than silently receiving an incorrect expiry date.
 
 The SQLite connection configures foreign-key enforcement, WAL journaling, a
 five-second busy timeout, and `synchronous=NORMAL`. The single desktop store
@@ -144,9 +149,11 @@ Two modes:
 - `time`
   requires `duration_value + duration_unit`
 - `visits`
-  requires `visit_limit`
+  requires both `visit_limit` and `duration_value + duration_unit`
 
-This avoids the V1 ambiguity where monthly-like plans and duration counts drift apart.
+Visit plans expire when their visits are exhausted or their calendar window
+ends, whichever happens first. This avoids the V1 ambiguity where
+monthly-like plans and duration counts drift apart.
 
 Indexes:
 
@@ -168,9 +175,10 @@ Tracks:
 
 Important rules:
 
-- time-based memberships have `ends_at`
-- visit-based memberships keep `visits_remaining`
-- a visit-based membership does not rely on a synthetic expiry date
+- every membership has `ends_at` from its duration snapshot
+- visit-based memberships also keep `visits_remaining`
+- a visit-based membership expires at the earlier of `ends_at` and no
+  remaining visits
 
 Indexes:
 
