@@ -1,6 +1,7 @@
 import type { CSSProperties, PropsWithChildren } from "react";
 
 export * from "./theme";
+export * from "./icons";
 
 export function Panel(props: PropsWithChildren<{ title: string; eyebrow?: string }>) {
   return (
