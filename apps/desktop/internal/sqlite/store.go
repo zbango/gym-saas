@@ -35,8 +35,12 @@ type appliedMigration struct {
 //go:embed migrations/001_v2_operational_core.sql
 var operationalCoreSQL string
 
+//go:embed migrations/002_visit_plan_expiry.sql
+var visitPlanExpirySQL string
+
 var migrations = []migration{
 	{Version: 1, Name: "v2_operational_core", SQL: operationalCoreSQL},
+	{Version: 2, Name: "visit_plan_expiry", SQL: visitPlanExpirySQL},
 }
 
 type Store struct {

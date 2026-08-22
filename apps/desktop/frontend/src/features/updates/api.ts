@@ -1,26 +1,21 @@
 import { buildCloudApiUrl, type UpdateManifest } from "@gym-saas/shared";
-import { desktopApp } from "../../platform/wails";
+import {
+  CheckForUpdates,
+  DownloadUpdatePackage,
+  GetDesktopVersion,
+  InstallDownloadedPackage,
+  OpenExternalURL,
+  OpenPath
+} from "../../../wailsjs/go/main/DesktopAPI";
+import type { updater } from "../../../wailsjs/go/models";
 
-export type DownloadedPackage = {
-  fileName: string;
-  path: string;
-};
-
-type UpdateBindings = {
-  GetDesktopVersion(): Promise<string>;
-  CheckForUpdates(manifestURL?: string): Promise<UpdateManifest | null>;
-  OpenExternalURL(url: string): Promise<void>;
-  DownloadUpdatePackage(url: string, checksum: string): Promise<DownloadedPackage>;
-  InstallDownloadedPackage(path: string): Promise<void>;
-  OpenPath(path: string): Promise<void>;
-};
-
-function updates(): UpdateBindings | null {
-  return desktopApp() as UpdateBindings | null;
-}
+export type DownloadedPackage = updater.DownloadedPackage;
 
 export async function getDesktopVersion(): Promise<string | null> {
-  return updates()?.GetDesktopVersion() ?? null;
+  if (!isDesktopRuntime()) {
+    return null;
+  }
+  return GetDesktopVersion();
 }
 
 export async function checkForUpdates(): Promise<UpdateManifest | null> {
@@ -28,26 +23,39 @@ export async function checkForUpdates(): Promise<UpdateManifest | null> {
   if (!manifestURL) {
     return null;
   }
-  return updates()?.CheckForUpdates(manifestURL) ?? null;
+  if (!isDesktopRuntime()) {
+    return null;
+  }
+  return CheckForUpdates(manifestURL) as Promise<UpdateManifest>;
 }
 
 export async function openExternalURL(url: string): Promise<void> {
-  const bridge = updates();
-  if (!bridge) {
+  if (!isDesktopRuntime()) {
     window.open(url, "_blank", "noopener,noreferrer");
     return;
   }
-  await bridge.OpenExternalURL(url);
+  await OpenExternalURL(url);
 }
 
 export async function downloadUpdatePackage(url: string, checksum: string): Promise<DownloadedPackage | null> {
-  return updates()?.DownloadUpdatePackage(url, checksum) ?? null;
+  if (!isDesktopRuntime()) {
+    return null;
+  }
+  return DownloadUpdatePackage(url, checksum);
 }
 
 export async function openPath(path: string): Promise<void> {
-  await updates()?.OpenPath(path);
+  if (isDesktopRuntime()) {
+    await OpenPath(path);
+  }
 }
 
 export async function installDownloadedPackage(path: string): Promise<void> {
-  await updates()?.InstallDownloadedPackage(path);
+  if (isDesktopRuntime()) {
+    await InstallDownloadedPackage(path);
+  }
+}
+
+function isDesktopRuntime(): boolean {
+  return typeof window !== "undefined" && "go" in window;
 }

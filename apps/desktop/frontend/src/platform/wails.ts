@@ -1,21 +1,5 @@
-type DesktopApp = Record<string, unknown>;
-
-declare global {
-  interface Window {
-    go?: {
-      main?: {
-        App?: DesktopApp;
-      };
-    };
-  }
-}
-
-// The Wails namespace is the only global bridge. Feature modules narrow it to
-// the small set of methods they own rather than collecting every binding here.
-export function desktopApp(): DesktopApp | null {
-  return window.go?.main?.App ?? null;
-}
-
+// Feature clients import Wails-generated modules directly. This tiny helper
+// only lets feature hooks distinguish the desktop runtime from a browser.
 export function isDesktopApp(): boolean {
-  return desktopApp() !== null;
+  return typeof window !== "undefined" && "go" in window;
 }

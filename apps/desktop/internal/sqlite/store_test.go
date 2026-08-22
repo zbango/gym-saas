@@ -11,7 +11,7 @@ func TestOpenAppliesV2SchemaOnce(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "gym-saas.db")
 
 	store := openTestStore(t, path)
-	assertSchemaVersion(t, store.db, 1)
+	assertSchemaVersion(t, store.db, 2)
 	assertTableExists(t, store.db, "gyms")
 	assertTableExists(t, store.db, "members")
 	assertTableExists(t, store.db, "membership_plans")
@@ -24,7 +24,7 @@ func TestOpenAppliesV2SchemaOnce(t *testing.T) {
 
 	store = openTestStore(t, path)
 	defer store.Close()
-	assertSchemaVersion(t, store.db, 1)
+	assertSchemaVersion(t, store.db, 2)
 }
 
 func TestOpenConfiguresSQLiteReliability(t *testing.T) {
@@ -67,7 +67,7 @@ func TestApplyMigrationsRollsBackOnFailure(t *testing.T) {
 	defer store.Close()
 
 	err := applyMigrations(context.Background(), store.db, append(migrations, migration{
-		Version: 2,
+		Version: 3,
 		Name:    "broken",
 		SQL: `
 CREATE TABLE rollback_probe (id TEXT PRIMARY KEY);
@@ -78,7 +78,7 @@ THIS IS NOT VALID SQL;
 		t.Fatal("applyMigrations succeeded for invalid SQL")
 	}
 
-	assertSchemaVersion(t, store.db, 1)
+	assertSchemaVersion(t, store.db, 2)
 	assertTableMissing(t, store.db, "rollback_probe")
 }
 
@@ -117,9 +117,51 @@ func TestOpenMigratesLegacyProofDatabase(t *testing.T) {
 
 	store := openTestStore(t, path)
 	defer store.Close()
-	assertSchemaVersion(t, store.db, 1)
+	assertSchemaVersion(t, store.db, 2)
 	assertTableExists(t, store.db, "hello_records")
 	assertTableExists(t, store.db, "members")
+}
+
+func TestOpenMigratesExistingTimePlanToVisitExpirySchema(t *testing.T) {
+	path := filepath.Join(t.TempDir(), "gym-saas.db")
+	db, err := sql.Open(driverName, databaseURL(path))
+	if err != nil {
+		t.Fatalf("open database: %v", err)
+	}
+	if err := applyMigrations(context.Background(), db, migrations[:1]); err != nil {
+		_ = db.Close()
+		t.Fatalf("apply baseline migration: %v", err)
+	}
+	const gymID = "5e78f083-1eb9-4c51-a248-b3424973d3ff"
+	const planID = "79bdbd3e-e094-45fb-9d94-7a38a976e4ac"
+	const timestamp = "2026-08-20T10:00:00Z"
+	if _, err := db.Exec(`INSERT INTO gyms (id, name, timezone, created_at, updated_at) VALUES (?, ?, ?, ?, ?)`, gymID, "Zeus", "UTC", timestamp, timestamp); err != nil {
+		_ = db.Close()
+		t.Fatalf("seed gym: %v", err)
+	}
+	if _, err := db.Exec(`
+INSERT INTO membership_plans (
+  id, gym_id, name, validity_kind, duration_value, duration_unit, visit_limit,
+  price_cents, currency, status, created_at, updated_at
+) VALUES (?, ?, ?, 'time', 1, 'months', NULL, 4500, 'USD', 'active', ?, ?)
+`, planID, gymID, "Monthly", timestamp, timestamp); err != nil {
+		_ = db.Close()
+		t.Fatalf("seed plan: %v", err)
+	}
+	if err := db.Close(); err != nil {
+		t.Fatalf("close baseline database: %v", err)
+	}
+
+	store := openTestStore(t, path)
+	defer store.Close()
+	assertSchemaVersion(t, store.db, 2)
+	var durationValue, visitLimit int
+	if err := store.db.QueryRow(`SELECT duration_value, COALESCE(visit_limit, 0) FROM membership_plans WHERE id = ?`, planID).Scan(&durationValue, &visitLimit); err != nil {
+		t.Fatalf("load migrated plan: %v", err)
+	}
+	if durationValue != 1 || visitLimit != 0 {
+		t.Fatalf("migrated plan = duration %d, visits %d", durationValue, visitLimit)
+	}
 }
 
 func TestOpenRejectsMigrationDrift(t *testing.T) {
@@ -153,8 +195,8 @@ func assertSchemaVersion(t *testing.T, db *sql.DB, want int) {
 	if err := db.QueryRow(`SELECT COUNT(*), COALESCE(MAX(version), 0) FROM schema_migrations`).Scan(&count, &version); err != nil {
 		t.Fatalf("read schema migrations: %v", err)
 	}
-	if count != 1 || version != want {
-		t.Fatalf("schema migrations = count %d, version %d; want count 1, version %d", count, version, want)
+	if count != want || version != want {
+		t.Fatalf("schema migrations = count %d, version %d; want count and version %d", count, version, want)
 	}
 }
 

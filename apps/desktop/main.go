@@ -51,13 +51,20 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	planService, err := application.NewMembershipPlanService(dbsqlite.NewMembershipPlanRepository(store), defaultGymID, time.Now)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	desktopVersion := shared.Version
 	if override := strings.TrimSpace(os.Getenv("GYM_SAAS_DESKTOP_VERSION_OVERRIDE")); override != "" {
 		desktopVersion = override
 	}
 
-	app := NewApp(updater.NewClient(desktopVersion), desktopVersion, memberService)
+	desktopRuntime := &DesktopRuntime{}
+	memberAPI := NewMemberAPI(desktopRuntime, memberService)
+	planAPI := NewMembershipPlanAPI(desktopRuntime, planService)
+	desktopAPI := NewDesktopAPI(desktopRuntime, updater.NewClient(desktopVersion), desktopVersion)
 
 	err = wails.Run(&options.App{
 		Title:  "gym-saas desktop",
@@ -66,9 +73,11 @@ func main() {
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		OnStartup: app.startup,
+		OnStartup: desktopRuntime.startup,
 		Bind: []any{
-			app,
+			memberAPI,
+			planAPI,
+			desktopAPI,
 		},
 	})
 	if err != nil {

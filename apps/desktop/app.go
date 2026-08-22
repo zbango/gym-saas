@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -12,110 +11,29 @@ import (
 
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 	"github.com/zbango/gym-saas/apps/desktop/internal/updater"
-	"github.com/zbango/gym-saas/go/core/application"
-	"github.com/zbango/gym-saas/go/core/domain"
 )
 
-type App struct {
-	ctx     context.Context
+// DesktopAPI is the Wails delivery adapter for app-level concerns such as
+// versioning, updater actions, and opening external resources.
+type DesktopAPI struct {
+	runtime *DesktopRuntime
 	updates *updater.Client
 	version string
-	members *application.MemberService
 }
 
-func NewApp(updates *updater.Client, version string, members *application.MemberService) *App {
-	return &App{updates: updates, version: version, members: members}
+func NewDesktopAPI(runtime *DesktopRuntime, updates *updater.Client, version string) *DesktopAPI {
+	return &DesktopAPI{runtime: runtime, updates: updates, version: version}
 }
 
-type MemberInput struct {
-	FirstName            string `json:"firstName"`
-	LastName             string `json:"lastName"`
-	Email                string `json:"email"`
-	Phone                string `json:"phone"`
-	IdentificationNumber string `json:"identificationNumber"`
-	DateOfBirth          string `json:"dateOfBirth"`
-	Address              string `json:"address"`
-	Status               string `json:"status"`
-}
-
-type Member struct {
-	ID                   string `json:"id"`
-	FirstName            string `json:"firstName"`
-	LastName             string `json:"lastName"`
-	Email                string `json:"email"`
-	Phone                string `json:"phone"`
-	IdentificationNumber string `json:"identificationNumber"`
-	DateOfBirth          string `json:"dateOfBirth"`
-	Address              string `json:"address"`
-	Status               string `json:"status"`
-}
-
-func (a *App) startup(ctx context.Context) {
-	a.ctx = ctx
-}
-
-func (a *App) Greet(name string) string {
+func (a *DesktopAPI) Greet(name string) string {
 	return fmt.Sprintf("Hello %s from gym-saas %s", name, a.version)
 }
 
-func (a *App) GetDesktopVersion() string {
+func (a *DesktopAPI) GetDesktopVersion() string {
 	return a.version
 }
 
-func (a *App) ListMembers() ([]Member, error) {
-	members, err := a.members.List(a.requestContext())
-	if err != nil {
-		return nil, err
-	}
-	result := make([]Member, 0, len(members))
-	for _, member := range members {
-		result = append(result, memberView(member))
-	}
-	return result, nil
-}
-
-func (a *App) CreateMember(input MemberInput) (Member, error) {
-	member, err := a.members.Create(a.requestContext(), application.MemberInput(input))
-	if err != nil {
-		return Member{}, err
-	}
-	return memberView(member), nil
-}
-
-func (a *App) UpdateMember(id string, input MemberInput) (Member, error) {
-	member, err := a.members.Update(a.requestContext(), id, application.MemberInput(input))
-	if err != nil {
-		return Member{}, err
-	}
-	return memberView(member), nil
-}
-
-func (a *App) ArchiveMember(id string) error {
-	return a.members.Archive(a.requestContext(), id)
-}
-
-func (a *App) requestContext() context.Context {
-	if a.ctx != nil {
-		return a.ctx
-	}
-	return context.Background()
-}
-
-func memberView(member domain.Member) Member {
-	return Member{
-		ID:                   string(member.ID()),
-		FirstName:            member.FirstName(),
-		LastName:             member.LastName(),
-		Email:                member.Email(),
-		Phone:                member.Phone(),
-		IdentificationNumber: member.IdentificationNumber(),
-		DateOfBirth:          member.DateOfBirth(),
-		Address:              member.Address(),
-		Status:               string(member.Status()),
-	}
-}
-
-func (a *App) CheckForUpdates(manifestURL string) (*updater.Manifest, error) {
+func (a *DesktopAPI) CheckForUpdates(manifestURL string) (*updater.Manifest, error) {
 	manifest, err := a.updates.Check(manifestURL)
 	if err != nil {
 		return nil, err
@@ -124,7 +42,7 @@ func (a *App) CheckForUpdates(manifestURL string) (*updater.Manifest, error) {
 	return manifest, nil
 }
 
-func (a *App) DownloadUpdatePackage(url, checksum string) (*updater.DownloadedPackage, error) {
+func (a *DesktopAPI) DownloadUpdatePackage(url, checksum string) (*updater.DownloadedPackage, error) {
 	result, err := a.updates.Download(updater.Asset{
 		OS:       runtime.GOOS,
 		Arch:     runtime.GOARCH,
@@ -138,7 +56,7 @@ func (a *App) DownloadUpdatePackage(url, checksum string) (*updater.DownloadedPa
 	return &result, nil
 }
 
-func (a *App) InstallDownloadedPackage(path string) error {
+func (a *DesktopAPI) InstallDownloadedPackage(path string) error {
 	if strings.TrimSpace(path) == "" {
 		return fmt.Errorf("path is required")
 	}
@@ -151,16 +69,16 @@ func (a *App) InstallDownloadedPackage(path string) error {
 	}
 }
 
-func (a *App) OpenExternalURL(url string) error {
+func (a *DesktopAPI) OpenExternalURL(url string) error {
 	if strings.TrimSpace(url) == "" {
 		return fmt.Errorf("url is required")
 	}
 
-	wailsruntime.BrowserOpenURL(a.ctx, url)
+	wailsruntime.BrowserOpenURL(a.runtime.requestContext(), url)
 	return nil
 }
 
-func (a *App) OpenPath(path string) error {
+func (a *DesktopAPI) OpenPath(path string) error {
 	if strings.TrimSpace(path) == "" {
 		return fmt.Errorf("path is required")
 	}
@@ -191,7 +109,7 @@ func defaultDesktopDBPath() (string, error) {
 	return filepath.Join(configDir, "gym-saas.db"), nil
 }
 
-func (a *App) installDownloadedPackageDarwin(packagePath string) error {
+func (a *DesktopAPI) installDownloadedPackageDarwin(packagePath string) error {
 	configDir, err := updater.AppConfigDir()
 	if err != nil {
 		return err
@@ -225,7 +143,7 @@ func (a *App) installDownloadedPackageDarwin(packagePath string) error {
 		if err := a.OpenPath(nextAppPath); err != nil {
 			return err
 		}
-		wailsruntime.Quit(a.ctx)
+		wailsruntime.Quit(a.runtime.requestContext())
 		return nil
 	}
 
@@ -250,7 +168,7 @@ open %q
 		return fmt.Errorf("start install script: %w", err)
 	}
 
-	wailsruntime.Quit(a.ctx)
+	wailsruntime.Quit(a.runtime.requestContext())
 	return nil
 }
 

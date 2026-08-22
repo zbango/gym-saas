@@ -7,7 +7,6 @@ import (
 	"time"
 
 	dbsqlite "github.com/zbango/gym-saas/apps/desktop/internal/sqlite"
-	"github.com/zbango/gym-saas/apps/desktop/internal/updater"
 	"github.com/zbango/gym-saas/go/core/application"
 	"github.com/zbango/gym-saas/go/core/domain"
 )
@@ -34,8 +33,8 @@ func TestAppMemberMethodsUseTheMemberService(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewMemberService returned error: %v", err)
 	}
-	app := NewApp(updater.NewClient("test"), "test", service)
-	created, err := app.CreateMember(MemberInput{
+	api := NewMemberAPI(&DesktopRuntime{}, service)
+	created, err := api.CreateMember(MemberInput{
 		FirstName: "Ada", LastName: "Lovelace", Phone: "555-0100", Email: "ada@example.com",
 		DateOfBirth: "1815-12-10", Address: "12 St. James's Square", Status: "active",
 	})
@@ -45,7 +44,7 @@ func TestAppMemberMethodsUseTheMemberService(t *testing.T) {
 	if created.ID == "" || created.FirstName != "Ada" {
 		t.Fatalf("CreateMember = %#v", created)
 	}
-	updated, err := app.UpdateMember(created.ID, MemberInput{
+	updated, err := api.UpdateMember(created.ID, MemberInput{
 		FirstName: "Augusta", LastName: "Lovelace", Phone: "555-0100", Email: "ada@example.com",
 		DateOfBirth: "1815-12-10", Address: "12 St. James's Square", Status: "inactive",
 	})
@@ -55,10 +54,10 @@ func TestAppMemberMethodsUseTheMemberService(t *testing.T) {
 	if updated.FirstName != "Augusta" || updated.Status != "inactive" {
 		t.Fatalf("UpdateMember = %#v", updated)
 	}
-	if err := app.ArchiveMember(created.ID); err != nil {
+	if err := api.ArchiveMember(created.ID); err != nil {
 		t.Fatalf("ArchiveMember returned error: %v", err)
 	}
-	members, err := app.ListMembers()
+	members, err := api.ListMembers()
 	if err != nil {
 		t.Fatalf("ListMembers returned error: %v", err)
 	}
@@ -89,8 +88,8 @@ func TestAppListsMembersAfterStoreReopens(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewMemberService returned error: %v", err)
 	}
-	app := NewApp(updater.NewClient("test"), "test", service)
-	created, err := app.CreateMember(MemberInput{FirstName: "Ada", LastName: "Lovelace", Phone: "555-0100", Status: "active"})
+	api := NewMemberAPI(&DesktopRuntime{}, service)
+	created, err := api.CreateMember(MemberInput{FirstName: "Ada", LastName: "Lovelace", Phone: "555-0100", Status: "active"})
 	if err != nil {
 		t.Fatalf("CreateMember returned error: %v", err)
 	}
@@ -107,7 +106,7 @@ func TestAppListsMembersAfterStoreReopens(t *testing.T) {
 	if err != nil {
 		t.Fatalf("NewMemberService after reopen returned error: %v", err)
 	}
-	members, err := NewApp(updater.NewClient("test"), "test", service).ListMembers()
+	members, err := NewMemberAPI(&DesktopRuntime{}, service).ListMembers()
 	if err != nil {
 		t.Fatalf("ListMembers after reopen returned error: %v", err)
 	}
