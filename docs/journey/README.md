@@ -58,6 +58,7 @@ The living inventory is [V1 visual inventory](./v1-visual-inventory.md).
 | [JRN-004](./tasks/JRN-004-member-list-visual-mock.md) | Awaiting human acceptance | Member screen mock plus reusable page-header, metric-card, and table primitives. |
 | [JRN-005](./tasks/JRN-005-membership-plan-list.md) | Awaiting human acceptance | Membership-plan visual cards backed by the desktop read API. |
 | [JRN-006](./tasks/JRN-006-dashboard-route-outlet.md) | Awaiting human acceptance | Replace dashboard conditional routing with an extensible route-view registry. |
+| [JRN-007](./tasks/JRN-007-membership-plan-create.md) | Awaiting human acceptance | Schema-aligned membership-plan create dialog and Wails mutation integration. |
 
 Tasks completed before this protocol are recorded as historical: their
 automated evidence and a repeatable manual check are preserved, but they do
