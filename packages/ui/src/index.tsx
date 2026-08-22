@@ -3,6 +3,7 @@ import type { CSSProperties, PropsWithChildren } from "react";
 export * from "./theme";
 export * from "./icons";
 export * from "./DataTable";
+export * from "./Dialog";
 export * from "./MetricCard";
 export * from "./PageHeader";
 

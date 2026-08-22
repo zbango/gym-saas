@@ -1,4 +1,4 @@
-import { type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import {
   DocumentIcon,
   EditIcon,
@@ -9,6 +9,7 @@ import {
 } from "@gym-saas/ui";
 import type { MembershipPlan as Plan } from "./api";
 import { useMembershipPlanList } from "./useMembershipPlanList";
+import { MembershipPlanCreateDialog } from "./MembershipPlanCreateDialog";
 import "./membership-plan-list-page.css";
 
 const previewPlans: Plan[] = [
@@ -23,6 +24,7 @@ const previewPlans: Plan[] = [
 export function MembershipPlanListPage() {
   const { plans, loading, error, refresh, desktopRuntime } = useMembershipPlanList();
   const displayedPlans = desktopRuntime ? plans : previewPlans;
+  const [createOpen, setCreateOpen] = useState(false);
 
   return (
     <div className="membership-plan-list-page">
@@ -31,8 +33,10 @@ export function MembershipPlanListPage() {
         icon={<DocumentIcon />}
         title="Planes de Membresía"
         description="Crea y gestiona planes de membresía, establece precios y configura beneficios para miembros."
-        actions={<button className="membership-plan-create-action" type="button"><PlusIcon /> Agregar Nuevo Plan</button>}
+        actions={<button className="membership-plan-create-action" type="button" onClick={() => setCreateOpen(true)}><PlusIcon /> Agregar Nuevo Plan</button>}
       />
+
+      <MembershipPlanCreateDialog open={createOpen} onClose={() => setCreateOpen(false)} onCreated={refresh} />
 
       {loading ? <PlanCardSkeletons /> : null}
       {!loading && error ? <PlanMessage tone="error" message={error} action={<button type="button" onClick={() => void refresh()}><RefreshIcon /> Reintentar</button>} /> : null}
