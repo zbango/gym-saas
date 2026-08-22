@@ -20,6 +20,16 @@ Each task must remain a small, reviewable change set. A failed manual check
 returns the same task to **Planned** with the observed result recorded; it
 does not silently advance the roadmap.
 
+## V1 visual-parity phase
+
+The current screen-inventory phase recreates V1 presentation with mocked
+client state before its Go use cases are implemented. These records prove
+visual and interaction parity only: React must not acquire business rules,
+fake persistence, or authorization decisions. Backend work and the final
+integration are tracked as separate follow-up tasks.
+
+The living inventory is [V1 visual inventory](./v1-visual-inventory.md).
+
 ## Status meanings
 
 | Status | Meaning |
@@ -42,6 +52,9 @@ does not silently advance the roadmap.
 | [ZV2-045/046](./tasks/ZV2-045-046-member-sqlite-repository.md) | Awaiting human acceptance | Member repository port and SQLite adapter. |
 | [ZV2-043](./tasks/ZV2-043-sqlite-migration-runner.md) | Historical—reviewable | Embedded, transactional SQLite migration runner. |
 | [ZV2-020-021](./tasks/ZV2-020-021-domain-conventions-money.md) | Historical—reviewable | UUID/UTC conventions and integer-cent Money. |
+| [JRN-001](./tasks/JRN-001-zeus-login-visual-mock.md) | Awaiting human acceptance | Zeus-themed visual mock of the V1 desktop login screen. |
+| [JRN-002](./tasks/JRN-002-super-admin-dashboard-visual-mock.md) | Awaiting human acceptance | Super-admin dashboard shell and full visual navigation mock. |
+| [JRN-003](./tasks/JRN-003-shared-icon-cleanup.md) | Awaiting human acceptance | Normalize the shared V1 SVG icon API and remove Tailwind coupling. |
 
 Tasks completed before this protocol are recorded as historical: their
 automated evidence and a repeatable manual check are preserved, but they do
