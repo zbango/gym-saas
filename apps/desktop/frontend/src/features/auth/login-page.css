@@ -1,0 +1,77 @@
+:root {
+  color: var(--gs-text);
+  background: var(--gs-background);
+  font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; }
+button, input { font: inherit; }
+button { cursor: pointer; }
+
+.login-page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  padding: 40px 24px;
+  background:
+    radial-gradient(circle at 49% 46%, rgba(65, 34, 12, 0.28) 0, rgba(65, 34, 12, 0) 33%),
+    linear-gradient(124deg, var(--gs-background) 0%, var(--gs-background-accent) 53%, var(--gs-background-ambient) 100%);
+}
+
+.login-page::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: "";
+  background: radial-gradient(ellipse 72% 88% at -7% -12%, rgba(0, 0, 0, 0.7), transparent 63%);
+}
+
+.login-card {
+  width: min(450px, 100%);
+  min-height: 645px;
+  padding: 42px 32px 32px;
+  border: 1px solid rgba(255, 228, 92, 0.08);
+  border-radius: 32px;
+  background: var(--gs-surface);
+  box-shadow: var(--gs-shadow);
+}
+
+.brand-mark { display: grid; place-items: center; min-height: 160px; }
+.brand-logo { width: 160px; height: 160px; object-fit: contain; filter: drop-shadow(0 0 12px rgba(255, 194, 18, 0.22)); }
+
+.login-intro { margin: 31px 0 36px; text-align: center; }
+.login-intro h1 { margin: 0; color: var(--gs-accent); font-size: clamp(26px, 3vw, 30px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.15; }
+.login-intro p { margin: 15px 0 0; color: var(--gs-text); font-size: 18px; font-weight: 500; line-height: 1.2; }
+.login-form { display: grid; gap: 20px; }
+.auth-field { display: grid; gap: 8px; color: var(--gs-text); font-size: 14px; font-weight: 700; }
+.auth-input-shell { display: flex; align-items: center; height: 50px; border: 1px solid var(--gs-border); border-radius: 9px; background: var(--gs-input-background); color: var(--gs-text-muted); transition: border-color 150ms ease, box-shadow 150ms ease; }
+.auth-input-shell:focus-within { border-color: var(--gs-border-strong); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gs-border-strong) 24%, transparent); }
+.auth-input-icon, .password-toggle { display: grid; flex: 0 0 auto; place-items: center; width: 42px; color: var(--gs-text-muted); }
+.auth-input-icon svg, .password-toggle svg { width: 18px; height: 18px; }
+.auth-input-shell input { width: 100%; min-width: 0; height: 100%; border: 0; outline: 0; background: transparent; color: var(--gs-input-text); font-size: 16px; }
+.auth-input-shell input::placeholder { color: #777d89; opacity: 1; }
+.password-toggle { height: 100%; border: 0; background: transparent; border-radius: 10px; }
+.password-toggle:hover, .password-toggle:focus-visible { color: var(--gs-accent); }
+.password-toggle:focus-visible, .forgot-password:focus-visible, .login-submit:focus-visible { outline: 3px solid var(--gs-border-strong); outline-offset: 3px; }
+.forgot-password { justify-self: end; margin: -1px 0 2px; padding: 0; border: 0; background: transparent; color: var(--gs-accent); font-size: 13px; font-weight: 700; }
+.forgot-password:hover { color: var(--gs-accent-strong); text-decoration: underline; }
+.login-submit { min-height: 44px; margin-top: 4px; border: 1px solid rgba(255, 221, 86, 0.4); border-radius: 9px; background: var(--gs-button-primary-background); color: var(--gs-button-primary-text); font-size: 16px; font-weight: 800; letter-spacing: -0.02em; transition: transform 150ms ease, filter 150ms ease; }
+.login-submit:hover:not(:disabled) { filter: brightness(1.06); transform: translateY(-1px); }
+.login-submit:disabled { cursor: wait; opacity: 0.72; }
+
+@media (max-width: 680px) {
+  .login-page { padding: 20px 16px; }
+  .login-card { min-height: 0; padding: 38px 26px 32px; border-radius: 26px; }
+  .brand-mark { min-height: 164px; }
+  .brand-logo { width: 132px; height: 132px; }
+  .login-intro { margin: 32px 0 40px; }
+  .login-intro p { font-size: 19px; }
+  .auth-field { font-size: 16px; }
+  .auth-input-shell { height: 58px; }
+  .auth-input-shell input { font-size: 17px; }
+}
