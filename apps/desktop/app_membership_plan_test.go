@@ -54,10 +54,17 @@ func TestAppMembershipPlanMethodsUseThePlanService(t *testing.T) {
 	if updated.Name != "20 visits / 2 months" || updated.VisitLimit != 20 || updated.Status != "inactive" {
 		t.Fatalf("UpdateMembershipPlan = %#v", updated)
 	}
+	plans, err := api.ListMembershipPlans()
+	if err != nil {
+		t.Fatalf("ListMembershipPlans returned error: %v", err)
+	}
+	if len(plans) != 1 || plans[0].ID != created.ID || plans[0].Name != updated.Name || plans[0].PriceCents != 7000 || plans[0].DurationUnit != "months" {
+		t.Fatalf("ListMembershipPlans = %#v", plans)
+	}
 	if err := api.ArchiveMembershipPlan(created.ID); err != nil {
 		t.Fatalf("ArchiveMembershipPlan returned error: %v", err)
 	}
-	plans, err := api.ListMembershipPlans()
+	plans, err = api.ListMembershipPlans()
 	if err != nil {
 		t.Fatalf("ListMembershipPlans returned error: %v", err)
 	}
