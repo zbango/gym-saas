@@ -3,14 +3,8 @@ import { Panel, ShellButton } from "@gym-saas/ui";
 import type { Member } from "./api";
 import { useMembers } from "./useMembers";
 
-const memberInputStyle = {
-  padding: "10px 12px",
-  background: "var(--gs-input-background)",
-  color: "var(--gs-input-text)",
-  border: "1px solid var(--gs-border)",
-  borderRadius: 12,
-  font: "inherit"
-};
+const fieldClassName = "min-h-11 rounded-xl border border-[var(--color-brand-border)] bg-[var(--color-brand-input)] px-3 py-2.5 text-[var(--color-brand-text)] outline-0";
+const labelClassName = "grid gap-1.5 font-semibold";
 
 export function MemberPanel() {
   const { members, form, editingMemberID, error, saving, setField, startEditing, cancelEditing, save, archive } = useMembers();
@@ -19,10 +13,10 @@ export function MemberPanel() {
 
   return (
     <Panel title="Members" eyebrow="Member directory">
-      <p style={{ marginTop: 0, color: "var(--gs-text-muted)" }}>
+      <p className="mt-0 text-[var(--color-brand-muted)]">
         {editingMemberID ? "Update this member's profile." : "Add a member to your local gym."}
       </p>
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(210px, 1fr))", gap: 12 }}>
+      <div className="grid gap-3 [grid-template-columns:repeat(auto-fit,minmax(210px,1fr))]">
         <MemberField label="First name" value={form.firstName} onChange={(value) => setField("firstName", value)} />
         <MemberField label="Last name" value={form.lastName} onChange={(value) => setField("lastName", value)} />
         <MemberField label="Phone" value={form.phone} onChange={(value) => setField("phone", value)} />
@@ -30,32 +24,32 @@ export function MemberPanel() {
         <MemberField label="Date of birth" type="date" value={form.dateOfBirth} onChange={(value) => setField("dateOfBirth", value)} />
         <MemberField label="Address" value={form.address} onChange={(value) => setField("address", value)} />
         <MemberField label="Identification number" value={form.identificationNumber} onChange={(value) => setField("identificationNumber", value)} />
-        <label style={{ display: "grid", gap: 6, fontWeight: 600 }}>
+        <label className={labelClassName}>
           Status
-          <select value={form.status} onChange={(event) => setField("status", event.target.value)} style={memberInputStyle}>
+          <select className={fieldClassName} value={form.status} onChange={(event) => setField("status", event.target.value)}>
             <option value="active">Active</option>
             <option value="inactive">Inactive</option>
             <option value="blocked">Blocked</option>
           </select>
         </label>
       </div>
-      {error ? <p style={{ color: "var(--gs-danger, #b42318)", marginBottom: 0 }}>{error}</p> : null}
-      <div style={{ display: "flex", gap: 8, marginTop: 16, flexWrap: "wrap" }}>
+      {error ? <p className="mb-0 text-[var(--color-brand-danger)]">{error}</p> : null}
+      <div className="mt-4 flex flex-wrap gap-2">
         <ShellButton onClick={() => void save()} disabled={saving}>
           {saving ? "Saving..." : editingMemberID ? "Save changes" : "Create member"}
         </ShellButton>
         {editingMemberID ? <ShellButton variant="secondary" onClick={cancelEditing}>Cancel</ShellButton> : null}
       </div>
-      <div style={{ display: "grid", gap: 8, marginTop: 20 }}>
+      <div className="mt-5 grid gap-2">
         {members.length === 0 ? (
-          <p style={{ color: "var(--gs-text-muted)", margin: 0 }}>No active members yet.</p>
+          <p className="m-0 text-[var(--color-brand-muted)]">No active members yet.</p>
         ) : members.map((member) => (
-          <div key={member.id} style={{ display: "flex", gap: 12, justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", borderTop: "1px solid var(--gs-border)", paddingTop: 12 }}>
+          <div key={member.id} className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--color-brand-border)] pt-3">
             <div>
               <strong>{member.firstName} {member.lastName}</strong>
-              <div style={{ color: "var(--gs-text-muted)", fontSize: 14 }}>{member.phone}{member.email ? ` · ${member.email}` : ""} · {member.status}</div>
+              <div className="text-sm text-[var(--color-brand-muted)]">{member.phone}{member.email ? ` · ${member.email}` : ""} · {member.status}</div>
             </div>
-            <div style={{ display: "flex", gap: 8 }}>
+            <div className="flex gap-2">
               <ShellButton variant="secondary" onClick={() => startEditing(member)}>Edit</ShellButton>
               <ShellButton variant="secondary" onClick={() => setArchiveCandidate(member)}>Archive</ShellButton>
             </div>
@@ -63,10 +57,10 @@ export function MemberPanel() {
         ))}
       </div>
       {archiveCandidate ? (
-        <div style={{ marginTop: 20, padding: 16, borderRadius: 12, background: "var(--gs-accent-soft)", display: "grid", gap: 10 }}>
+        <div className="mt-5 grid gap-2.5 rounded-xl bg-[var(--color-brand-accent-soft)] p-4">
           <strong>Archive {archiveCandidate.firstName} {archiveCandidate.lastName}?</strong>
           <span>This removes them from the active list but does not permanently delete their record.</span>
-          <div style={{ display: "flex", gap: 8 }}>
+          <div className="flex gap-2">
             <ShellButton variant="secondary" onClick={() => setArchiveCandidate(null)} disabled={archiving}>Cancel</ShellButton>
             <ShellButton
               disabled={archiving}
@@ -92,9 +86,9 @@ export function MemberPanel() {
 
 function MemberField(props: { label: string; value: string; onChange: (value: string) => void; type?: string }) {
   return (
-    <label style={{ display: "grid", gap: 6, fontWeight: 600 }}>
+    <label className={labelClassName}>
       {props.label}
-      <input type={props.type ?? "text"} value={props.value} onChange={(event) => props.onChange(event.target.value)} style={memberInputStyle} />
+      <input className={fieldClassName} type={props.type ?? "text"} value={props.value} onChange={(event) => props.onChange(event.target.value)} />
     </label>
   );
 }

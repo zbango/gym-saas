@@ -4,9 +4,8 @@ export type DataTableColumn<Row> = {
   id: string;
   header: ReactNode;
   cell: (row: Row) => ReactNode;
-  width?: string;
-  align?: "left" | "center" | "right";
-  className?: string;
+  headerClassName?: string;
+  cellClassName?: string;
 };
 
 export type DataTableProps<Row> = {
@@ -36,8 +35,7 @@ export function DataTable<Row>({
               {columns.map((column) => (
                 <th
                   key={column.id}
-                  className={column.className}
-                  style={{ width: column.width, textAlign: column.align ?? "left" }}
+                  className={`text-left ${column.headerClassName ?? ""}`.trim()}
                   scope="col"
                 >
                   {column.header}
@@ -51,7 +49,7 @@ export function DataTable<Row>({
             ) : rows.map((row) => (
               <tr key={rowKey(row)}>
                 {columns.map((column) => (
-                  <td key={column.id} className={column.className} style={{ textAlign: column.align ?? "left" }}>
+                  <td key={column.id} className={`text-left ${column.cellClassName ?? ""}`.trim()}>
                     {column.cell(row)}
                   </td>
                 ))}

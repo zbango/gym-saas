@@ -1,0 +1,8 @@
+@import "tailwindcss";
+@import "../../../../packages/ui/src/brand.css";
+
+@source "../../../../packages/ui/src";
+
+@layer base {
+  html { font-family: var(--font-brand); }
+}

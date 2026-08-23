@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
+import "./tailwind.css";
 import { appName, buildCloudApiUrl, platformLabel } from "@gym-saas/shared";
-import { Panel, ThemeProvider, ThemeSwitcher } from "@gym-saas/ui";
+import { Panel } from "@gym-saas/ui";
 
 function App() {
   const [cloudVersion, setCloudVersion] = useState<string>("not fetched");
@@ -43,25 +44,16 @@ function App() {
   }, [versionUrl]);
 
   return (
-    <main
-      style={{
-        minHeight: "100vh",
-        padding: 32,
-        background:
-          "radial-gradient(circle at top left, var(--gs-background-accent) 0%, var(--gs-surface) 44%, var(--gs-background-ambient) 100%)",
-        fontFamily: "Avenir Next, Futura, sans-serif"
-      }}
-    >
-      <div style={{ display: "grid", gap: 20 }}>
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,var(--color-brand-ambient)_0%,var(--color-brand-surface)_44%,var(--color-brand-gold)_100%)] p-8 [font-family:Avenir_Next,Futura,sans-serif]">
+      <div className="grid gap-5">
         <Panel title="Theme Studio" eyebrow={appName}>
-          <div style={{ display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap" }}>
+          <div className="flex flex-wrap justify-between gap-4">
             <div>
-              <p style={{ marginTop: 0 }}>Desktop and web now share the same theme engine.</p>
-              <p style={{ marginBottom: 0, color: "var(--gs-text-muted)" }}>
-                Pick a shell look once and let future business screens inherit it automatically.
+              <p className="mt-0">Desktop and web now share the same theme engine.</p>
+              <p className="mb-0 text-[var(--color-brand-muted)]">
+                Zeus styling is compiled through Tailwind utilities.
               </p>
             </div>
-            <ThemeSwitcher />
           </div>
         </Panel>
 
@@ -79,8 +71,6 @@ function App() {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ThemeProvider>
-      <App />
-    </ThemeProvider>
+    <App />
   </React.StrictMode>
 );

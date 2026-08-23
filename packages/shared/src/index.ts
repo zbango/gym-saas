@@ -1,7 +1,6 @@
 export const appName = "gym-saas";
 export const desktopVersion = "0.1.2";
 
-export * from "./theme";
 
 export type UpdateAsset = {
   os: string;

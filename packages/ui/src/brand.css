@@ -1,0 +1,28 @@
+@theme {
+  --color-brand-canvas: #1c1510;
+  --color-brand-ambient: #b75b1e;
+  --color-brand-gold: #ffd51b;
+  --color-brand-surface: #25221e;
+  --color-brand-surface-elevated: #2a2621;
+  --color-brand-workspace: #fafafb;
+  --color-brand-sidebar: #1b1d1c;
+  --color-brand-sidebar-text: #eef0ef;
+  --color-brand-text: #f5f2ee;
+  --color-brand-muted: #a5a8b0;
+  --color-brand-border: #66511d;
+  --color-brand-accent: #f6ca19;
+  --color-brand-accent-strong: #f28a32;
+  --color-brand-accent-soft: #4f3e17;
+  --color-brand-input: #26231f;
+  --color-brand-input-text: #f5f2ee;
+  --color-brand-success: #4ca555;
+  --color-brand-success-soft: #edf8ee;
+  --color-brand-danger: #cf443a;
+  --color-brand-danger-soft: #fff3f1;
+  --color-brand-button-start: #ffd919;
+  --color-brand-button-middle: #ffc51d;
+  --color-brand-button-end: #ef8139;
+  --color-brand-button-text: #201c18;
+  --shadow-brand-card: 0 28px 72px rgba(28, 14, 4, 0.42);
+  --font-brand: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+}

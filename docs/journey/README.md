@@ -59,6 +59,9 @@ The living inventory is [V1 visual inventory](./v1-visual-inventory.md).
 | [JRN-005](./tasks/JRN-005-membership-plan-list.md) | Awaiting human acceptance | Membership-plan visual cards backed by the desktop read API. |
 | [JRN-006](./tasks/JRN-006-dashboard-route-outlet.md) | Awaiting human acceptance | Replace dashboard conditional routing with an extensible route-view registry. |
 | [JRN-007](./tasks/JRN-007-membership-plan-create.md) | Awaiting human acceptance | Schema-aligned membership-plan create dialog and Wails mutation integration. |
+| [JRN-008](./tasks/JRN-008-tailwind-vite-setup.md) | Awaiting human acceptance | Add Tailwind v4 utility compilation to desktop and web Vite hosts. |
+| [JRN-009](./tasks/JRN-009-tailwind-style-migration.md) | Awaiting human acceptance | Migrate current frontend and shared UI styling to Tailwind utilities. |
+| [JRN-010](./tasks/JRN-010-static-zeus-tailwind-theme.md) | Awaiting human acceptance | Replace runtime theme tokens with a single static Zeus Tailwind theme. |
 
 Tasks completed before this protocol are recorded as historical: their
 automated evidence and a repeatable manual check are preserved, but they do

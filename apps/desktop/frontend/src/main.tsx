@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom/client";
-import { ThemeProvider } from "@gym-saas/ui";
+import "./tailwind.css";
 import { LoginPage } from "./features/auth/LoginPage";
 import { DashboardPage } from "./features/dashboard/DashboardPage";
 
@@ -16,8 +16,6 @@ function App() {
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ThemeProvider fixedTheme="zeus">
-      <App />
-    </ThemeProvider>
+    <App />
   </React.StrictMode>
 );
