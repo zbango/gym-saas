@@ -15,6 +15,7 @@ export type DataTableProps<Row> = {
   emptyMessage?: string;
   caption?: string;
   className?: string;
+  tableClassName?: string;
 };
 
 export function DataTable<Row>({
@@ -23,13 +24,14 @@ export function DataTable<Row>({
   rowKey,
   emptyMessage = "No hay datos para mostrar.",
   caption,
-  className
+  className,
+  tableClassName
 }: DataTableProps<Row>) {
   return (
-    <div className={`gs-data-table ${className ?? ""}`.trim()}>
-      <div className="gs-data-table-scroll">
-        <table>
-          {caption ? <caption>{caption}</caption> : null}
+    <div className={`overflow-hidden rounded-t-[11px] border border-[#e1e4e8] bg-white ${className ?? ""}`.trim()}>
+      <div className="overflow-x-auto">
+        <table className={`w-full border-collapse ${tableClassName ?? ""}`.trim()}>
+          {caption ? <caption className="sr-only">{caption}</caption> : null}
           <thead>
             <tr>
               {columns.map((column) => (
@@ -45,7 +47,7 @@ export function DataTable<Row>({
           </thead>
           <tbody>
             {rows.length === 0 ? (
-              <tr><td className="gs-data-table-empty" colSpan={columns.length}>{emptyMessage}</td></tr>
+              <tr><td className="p-8 text-center text-[#64707b]" colSpan={columns.length}>{emptyMessage}</td></tr>
             ) : rows.map((row) => (
               <tr key={rowKey(row)}>
                 {columns.map((column) => (

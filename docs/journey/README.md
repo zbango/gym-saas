@@ -62,6 +62,7 @@ The living inventory is [V1 visual inventory](./v1-visual-inventory.md).
 | [JRN-008](./tasks/JRN-008-tailwind-vite-setup.md) | Awaiting human acceptance | Add Tailwind v4 utility compilation to desktop and web Vite hosts. |
 | [JRN-009](./tasks/JRN-009-tailwind-style-migration.md) | Awaiting human acceptance | Migrate current frontend and shared UI styling to Tailwind utilities. |
 | [JRN-010](./tasks/JRN-010-static-zeus-tailwind-theme.md) | Awaiting human acceptance | Replace runtime theme tokens with a single static Zeus Tailwind theme. |
+| [JRN-011](./tasks/JRN-011-user-management-roles.md) | Awaiting human acceptance | Define canonical user roles and create the user-management visual mock. |
 
 Tasks completed before this protocol are recorded as historical: their
 automated evidence and a repeatable manual check are preserved, but they do

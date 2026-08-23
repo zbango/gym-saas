@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import {
   DocumentIcon,
   EditIcon,
+  PageHeader,
   PlusIcon,
   RefreshIcon,
   TrashIcon
@@ -26,28 +27,7 @@ export function MembershipPlanListPage() {
 
   return (
     <div className="px-16 py-14 text-[#172131] max-[1260px]:px-[43px] max-[1260px]:py-[46px] max-[920px]:px-[22px] max-[920px]:py-8 max-[560px]:px-[14px] max-[560px]:py-6">
-      <section className="mb-[46px] flex items-start justify-between gap-7 max-[920px]:grid">
-        <div className="flex items-start gap-[18px]">
-          <div className="grid h-[66px] w-[66px] place-items-center rounded-[13px] bg-[#242e3e] text-white [&>svg]:h-[37px] [&>svg]:w-[37px]">
-            <DocumentIcon />
-          </div>
-          <div>
-            <h1 className="m-0 text-[38px] leading-[1.15] font-extrabold tracking-[-0.04em] max-[1260px]:text-[33px] max-[560px]:text-[28px]">
-              Planes de Membresía
-            </h1>
-            <p className="mt-2.5 text-[21px] text-[#5f6974] max-[560px]:text-[17px]">
-              Crea y gestiona planes de membresía, establece precios y configura beneficios para miembros.
-            </p>
-          </div>
-        </div>
-        <button
-          className="inline-flex min-h-[58px] items-center gap-3 rounded-xl border-0 bg-[linear-gradient(100deg,var(--color-brand-button-start)_0%,var(--color-brand-button-middle)_42%,var(--color-brand-button-end)_100%)] px-[29px] text-xl font-extrabold whitespace-nowrap text-[var(--color-brand-button-text)] shadow-[0_12px_22px_rgba(178,103,33,0.18)] max-[1260px]:min-h-[49px] max-[1260px]:px-5 max-[1260px]:text-[17px] max-[920px]:w-fit max-[560px]:w-full max-[560px]:justify-center"
-          type="button"
-          onClick={() => setCreateOpen(true)}
-        >
-          <PlusIcon className="h-[25px] w-[25px]" /> Agregar Nuevo Plan
-        </button>
-      </section>
+      <PageHeader icon={<DocumentIcon />} iconClassName="h-[66px] w-[66px] rounded-[13px] bg-[#242e3e] pt-0 text-white" title="Planes de Membresía" description="Crea y gestiona planes de membresía, establece precios y configura beneficios para miembros." actions={<button className="inline-flex min-h-[58px] items-center gap-3 rounded-xl border-0 bg-[linear-gradient(100deg,var(--color-brand-button-start)_0%,var(--color-brand-button-middle)_42%,var(--color-brand-button-end)_100%)] px-[29px] text-xl font-extrabold whitespace-nowrap text-[var(--color-brand-button-text)] shadow-[0_12px_22px_rgba(178,103,33,0.18)] max-[1260px]:min-h-[49px] max-[1260px]:px-5 max-[1260px]:text-[17px] max-[920px]:w-fit max-[560px]:w-full max-[560px]:justify-center" type="button" onClick={() => setCreateOpen(true)}><PlusIcon className="h-[25px] w-[25px]" /> Agregar Nuevo Plan</button>} />
 
       <MembershipPlanCreateDialog open={createOpen} onClose={() => setCreateOpen(false)} onCreated={refresh} />
 

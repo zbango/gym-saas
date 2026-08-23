@@ -2,6 +2,7 @@ import { useState, type ReactNode } from "react";
 import {
   AlertCircleIcon,
   AlertTriangleIcon,
+  PageHeader,
   CalendarIcon,
   CheckCircleIcon,
   MoreVerticalIcon,
@@ -63,35 +64,7 @@ export function MemberListPage() {
 
   return (
     <div className="px-16 py-14 text-[#1c2431] max-[1260px]:px-[43px] max-[1260px]:py-[46px] max-[920px]:px-[22px] max-[920px]:py-8 max-[560px]:px-[14px] max-[560px]:py-6">
-      <section className="mb-[46px] flex items-start justify-between gap-7 max-[920px]:grid">
-        <div className="flex items-start gap-[18px]">
-          <div className="grid place-items-center pt-1 text-[#56616d] [&>svg]:h-[37px] [&>svg]:w-[37px]">
-            <UsersIcon />
-          </div>
-          <div>
-            <h1 className="m-0 text-[38px] leading-[1.15] font-extrabold tracking-[-0.04em] max-[1260px]:text-[33px] max-[560px]:text-[28px]">
-              Lista de Miembros
-            </h1>
-            <p className="mt-2.5 text-[21px] text-[#5f6974] max-[560px]:text-[17px]">
-              Ver y gestionar todos los miembros del gimnasio
-            </p>
-          </div>
-        </div>
-        <div className="flex gap-[14px] max-[920px]:flex-wrap">
-          <button
-            className="inline-flex min-h-[58px] items-center gap-3 rounded-xl border-0 bg-[#374357] px-7 text-xl font-extrabold whitespace-nowrap text-white shadow-[0_12px_22px_rgba(33,44,62,0.18)] max-[1260px]:min-h-[49px] max-[1260px]:px-[18px] max-[1260px]:text-[17px] max-[560px]:w-full max-[560px]:justify-center"
-            type="button"
-          >
-            <RefreshIcon className="h-6 w-6" /> Actualizar
-          </button>
-          <button
-            className="inline-flex min-h-[58px] items-center gap-3 rounded-xl border-0 bg-[linear-gradient(100deg,var(--color-brand-button-start)_0%,var(--color-brand-button-middle)_42%,var(--color-brand-button-end)_100%)] px-7 text-xl font-extrabold whitespace-nowrap text-[var(--color-brand-button-text)] shadow-[0_12px_22px_rgba(178,103,33,0.18)] max-[1260px]:min-h-[49px] max-[1260px]:px-[18px] max-[1260px]:text-[17px] max-[560px]:w-full max-[560px]:justify-center"
-            type="button"
-          >
-            <PlusIcon className="h-6 w-6" /> Agregar Nuevo Miembro
-          </button>
-        </div>
-      </section>
+      <PageHeader icon={<UsersIcon />} title="Lista de Miembros" description="Ver y gestionar todos los miembros del gimnasio" actions={<><button className="inline-flex min-h-[58px] items-center gap-3 rounded-xl border-0 bg-[#374357] px-7 text-xl font-extrabold whitespace-nowrap text-white shadow-[0_12px_22px_rgba(33,44,62,0.18)] max-[1260px]:min-h-[49px] max-[1260px]:px-[18px] max-[1260px]:text-[17px] max-[560px]:w-full max-[560px]:justify-center" type="button"><RefreshIcon className="h-6 w-6" /> Actualizar</button><button className="inline-flex min-h-[58px] items-center gap-3 rounded-xl border-0 bg-[linear-gradient(100deg,var(--color-brand-button-start)_0%,var(--color-brand-button-middle)_42%,var(--color-brand-button-end)_100%)] px-7 text-xl font-extrabold whitespace-nowrap text-[var(--color-brand-button-text)] shadow-[0_12px_22px_rgba(178,103,33,0.18)] max-[1260px]:min-h-[49px] max-[1260px]:px-[18px] max-[1260px]:text-[17px] max-[560px]:w-full max-[560px]:justify-center" type="button"><PlusIcon className="h-6 w-6" /> Agregar Nuevo Miembro</button></>} />
 
       <section
         className="mb-[39px] grid grid-cols-5 gap-6 max-[1260px]:grid-cols-3 max-[920px]:grid-cols-2 max-[560px]:grid-cols-1"

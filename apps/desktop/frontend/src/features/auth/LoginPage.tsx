@@ -1,37 +1,37 @@
 import { useState, type FormEvent, type ReactNode } from "react";
 import { EyeIcon, EyeOffIcon, LockIcon, UserIcon } from "@gym-saas/ui";
 import logoSrc from "../../assets/logo.png";
-
-type LoginCredentials = {
-  username: string;
-  password: string;
-};
+import { authenticateMockUser, mockLoginAccounts, type AuthenticatedUser } from "./mockAuth";
 
 type LoginPageProps = {
   brandName?: string;
-  onSubmit?: (credentials: LoginCredentials) => void | Promise<void>;
+  onAuthenticated?: (user: AuthenticatedUser) => void;
   onForgotPassword?: () => void;
 };
 
 export function LoginPage({
   brandName = "Zeus Gym",
-  onSubmit,
+  onAuthenticated,
   onForgotPassword
 }: LoginPageProps) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [passwordVisible, setPasswordVisible] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [loginError, setLoginError] = useState("");
 
   async function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (!onSubmit) {
-      return;
-    }
-
     setSubmitting(true);
+    setLoginError("");
     try {
-      await onSubmit({ username, password });
+      const user = await authenticateMockUser({ username, password });
+      if (!user) {
+        setLoginError("Usuario o contraseña incorrectos.");
+        return;
+      }
+
+      onAuthenticated?.(user);
     } finally {
       setSubmitting(false);
     }
@@ -109,9 +109,26 @@ export function LoginPage({
           >
             {submitting ? "INICIANDO SESIÓN..." : "INICIAR SESIÓN"}
           </button>
+          {loginError ? <p className="m-0 text-sm font-bold text-[var(--color-brand-danger)]" role="alert">{loginError}</p> : null}
         </form>
+        <MockLoginHint />
       </section>
     </main>
+  );
+}
+
+function MockLoginHint() {
+  return (
+    <section className="mt-7 border-t border-[var(--color-brand-border)] pt-5 text-center text-xs text-[var(--color-brand-muted)]" aria-label="Cuentas de demostración">
+      <strong className="block text-[var(--color-brand-text)]">Cuentas de demostración</strong>
+      <ul className="mt-2 grid gap-1 pl-0" role="list">
+        {mockLoginAccounts.map((account) => (
+          <li key={account.username}>
+            <code>{account.username}</code> / <code>{account.password}</code> — {account.role}
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

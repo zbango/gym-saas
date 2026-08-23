@@ -3,15 +3,16 @@ import ReactDOM from "react-dom/client";
 import "./tailwind.css";
 import { LoginPage } from "./features/auth/LoginPage";
 import { DashboardPage } from "./features/dashboard/DashboardPage";
+import type { AuthenticatedUser } from "./features/auth/mockAuth";
 
 function App() {
-  const [screen, setScreen] = useState<"login" | "dashboard">("login");
+  const [user, setUser] = useState<AuthenticatedUser | null>(null);
 
-  if (screen === "dashboard") {
-    return <DashboardPage onSignOut={() => setScreen("login")} />;
+  if (user) {
+    return <DashboardPage user={user} onSignOut={() => setUser(null)} />;
   }
 
-  return <LoginPage onSubmit={() => setScreen("dashboard")} />;
+  return <LoginPage onAuthenticated={setUser} />;
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

@@ -1,87 +1,41 @@
-import { useState, type ComponentType } from "react";
+import { useState } from "react";
 import { desktopVersion } from "@gym-saas/shared";
 import {
   ActivityIcon,
   AlertCircleIcon,
   ArrowLeftIcon,
-  AwardIcon,
-  BarChartIcon,
-  CakeIcon,
-  CalendarIcon,
   CameraIcon,
-  CashIcon,
   ChevronDownIcon,
-  CreditCardIcon,
-  FilterIcon,
-  HistoryIcon,
   InfoCircleIcon,
   ListIcon,
   PlusIcon,
-  ShoppingBagIcon,
-  ShoppingCartIcon,
-  UsersGroupIcon,
-  UsersIcon
 } from "@gym-saas/ui";
 import logoSrc from "../../assets/logo.png";
+import type { AuthenticatedUser } from "../auth/mockAuth";
 import { DashboardRouteOutlet } from "./DashboardRouteOutlet";
+import {
+  canAccessRoute,
+  firstAccessibleRoute,
+  routeLabels,
+  visibleNavigation,
+  type DashboardRoute,
+  type IconComponent
+} from "./navigation";
 
 type DashboardPageProps = {
+  user: AuthenticatedUser;
   onSignOut: () => void;
 };
 
-type NavigationItem = {
-  id: string;
-  label: string;
-  icon: IconComponent;
-  children?: Array<{ id: string; label: string; icon: IconComponent }>;
-};
-
-type IconComponent = ComponentType<{ className?: string }>;
-
-const navigation: NavigationItem[] = [
-  { id: "dashboard", label: "Panel de Control", icon: BarChartIcon },
-  { id: "members", label: "Clientes", icon: UsersIcon },
-  { id: "attendance", label: "Asistencias", icon: CalendarIcon },
-  { id: "birthdays", label: "Cumpleañeros", icon: CakeIcon },
-  {
-    id: "memberships",
-    label: "Membresías",
-    icon: CreditCardIcon,
-    children: [
-      { id: "plans", label: "Planes", icon: ListIcon },
-      { id: "membership-payments", label: "Pagos", icon: CashIcon }
-    ]
-  },
-  {
-    id: "store",
-    label: "Tienda",
-    icon: ShoppingBagIcon,
-    children: [
-      { id: "products", label: "Productos", icon: ShoppingBagIcon },
-      { id: "sales", label: "Ventas", icon: ShoppingCartIcon }
-    ]
-  },
-  { id: "users", label: "Gestión de Usuarios", icon: UsersGroupIcon },
-  { id: "marketing", label: "Marketing", icon: AwardIcon },
-  { id: "settings", label: "Configuración", icon: FilterIcon },
-  { id: "monitoring", label: "Monitoreo", icon: CameraIcon },
-  { id: "system-health", label: "Salud del Sistema", icon: ActivityIcon },
-  { id: "logs", label: "Logs", icon: HistoryIcon }
-];
-
-const routeLabels = Object.fromEntries(
-  navigation.flatMap((item) => [
-    [item.id, item.label],
-    ...(item.children?.map((child) => [child.id, child.label]) ?? [])
-  ])
-);
-
-export function DashboardPage({ onSignOut }: DashboardPageProps) {
-  const [activeRoute, setActiveRoute] = useState("dashboard");
+export function DashboardPage({ user, onSignOut }: DashboardPageProps) {
+  const [activeRoute, setActiveRoute] = useState<DashboardRoute>(() => firstAccessibleRoute(user.role));
   const [openGroups, setOpenGroups] = useState<Record<string, boolean>>({ memberships: true, store: true });
+  const menu = visibleNavigation(user.role);
 
-  function activate(route: string) {
-    setActiveRoute(route);
+  function activate(route: DashboardRoute) {
+    if (canAccessRoute(user.role, route)) {
+      setActiveRoute(route);
+    }
   }
 
   function toggleGroup(group: string) {
@@ -104,7 +58,7 @@ export function DashboardPage({ onSignOut }: DashboardPageProps) {
           className="grid max-h-[255px] flex-1 content-start gap-0.5 overflow-y-auto px-4 py-4 min-[921px]:max-h-none"
           aria-label="Navegación principal"
         >
-          {navigation.map((item) => {
+          {menu.map((item) => {
             const isGroup = Boolean(item.children);
             const expanded = Boolean(openGroups[item.id]);
             const selected = activeRoute === item.id || item.children?.some((child) => child.id === activeRoute);
@@ -162,12 +116,12 @@ export function DashboardPage({ onSignOut }: DashboardPageProps) {
         <div className="mt-auto hidden gap-[14px] border-t border-t-[color-mix(in_srgb,var(--color-brand-accent)_28%,transparent)] px-4 py-5 min-[921px]:grid">
           <div className="flex items-center gap-3">
             <span className="grid h-[43px] w-[43px] shrink-0 place-items-center rounded-full border border-[var(--color-brand-accent)] bg-[color-mix(in_srgb,var(--color-brand-accent)_18%,transparent)] text-[20px] font-extrabold text-[var(--color-brand-accent)]">
-              S
+              {user.name.charAt(0)}
             </span>
             <span className="grid min-w-0 gap-1">
-              <strong className="text-[16px]">Super Administrador</strong>
+              <strong className="text-[16px]">{roleDisplayName(user.role)}</strong>
               <small className="text-[13px] text-[color-mix(in_srgb,var(--color-brand-sidebar-text)_66%,transparent)]">
-                superadmin@zeus.gym
+                {user.email}
               </small>
             </span>
           </div>
@@ -218,7 +172,7 @@ export function DashboardPage({ onSignOut }: DashboardPageProps) {
           </div>
         </header>
 
-        <DashboardRouteOutlet route={activeRoute} title={activeLabel} />
+        <DashboardRouteOutlet role={user.role} route={activeRoute} title={activeLabel} />
       </section>
     </main>
   );
@@ -250,4 +204,14 @@ function DeviceBanner() {
 
 function MenuGlyph({ Icon }: { Icon: IconComponent }) {
   return <Icon className="h-[26px] w-[26px] shrink-0 text-current" />;
+}
+
+function roleDisplayName(role: AuthenticatedUser["role"]): string {
+  const labels: Record<AuthenticatedUser["role"], string> = {
+    super_admin: "Super Administrador",
+    gym_admin: "Administrador de Gimnasio",
+    receptionist: "Recepcionista"
+  };
+
+  return labels[role];
 }
