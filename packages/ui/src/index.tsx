@@ -5,6 +5,7 @@ export * from "./DataTable";
 export * from "./Dialog";
 export * from "./MetricCard";
 export * from "./PageHeader";
+export * from "./Tabs";
 
 export function Panel(props: PropsWithChildren<{ title: string; eyebrow?: string }>) {
   return (

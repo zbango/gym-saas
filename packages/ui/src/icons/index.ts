@@ -40,3 +40,4 @@ export { ChevronUpIcon } from './ChevronUpIcon';
 export { HistoryIcon } from './HistoryIcon';
 export { AwardIcon } from './AwardIcon';
 export { MoreVerticalIcon } from './MoreVerticalIcon';
+export { SettingsIcon } from './SettingsIcon';
