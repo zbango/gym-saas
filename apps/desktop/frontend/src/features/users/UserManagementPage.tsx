@@ -12,6 +12,7 @@ import {
   UserIcon,
   UsersIcon
 } from "@gym-saas/ui";
+import { UserCreateDialog, type NewUserInput } from "./UserCreateDialog";
 
 type UserRole = "super_admin" | "gym_owner" | "gym_admin" | "trainer" | "receptionist" | "member";
 
@@ -26,7 +27,7 @@ type SystemUser = {
   createdAt: string;
 };
 
-const users: SystemUser[] = [
+const initialUsers: SystemUser[] = [
   { id: "mock-user-1", name: "Carla Mora", handle: "@carla", email: "carla.mora@example.test", role: "receptionist", active: true, lastAccess: "Nunca", createdAt: "6 ene 2026, 13:44" },
   { id: "mock-user-2", name: "Diego Vera", handle: "@diego", email: "diego.vera@example.test", role: "receptionist", active: true, lastAccess: "Nunca", createdAt: "6 ene 2026, 13:23" },
   { id: "mock-user-3", name: "Sofía Paz", handle: "@sofia", email: "sofia.paz@example.test", role: "receptionist", active: true, lastAccess: "Nunca", createdAt: "6 ene 2026, 13:05" },
@@ -56,6 +57,26 @@ const columns: Array<DataTableColumn<SystemUser>> = [
 
 export function UserManagementPage() {
   const [query, setQuery] = useState("");
+  const [users, setUsers] = useState(initialUsers);
+  const [createOpen, setCreateOpen] = useState(false);
+  const normalizedQuery = query.trim().toLocaleLowerCase();
+  const filteredUsers = normalizedQuery
+    ? users.filter((user) => [user.name, user.handle, user.email, roleLabels[user.role]].some((value) => value.toLocaleLowerCase().includes(normalizedQuery)))
+    : users;
+
+  function addUser(input: NewUserInput) {
+    const createdAt = new Intl.DateTimeFormat("es-EC", { dateStyle: "medium", timeStyle: "short" }).format(new Date());
+    setUsers((current) => [{
+      id: `mock-user-${crypto.randomUUID()}`,
+      name: input.name,
+      handle: `@${input.username}`,
+      email: input.email,
+      role: input.role,
+      active: true,
+      lastAccess: "Nunca",
+      createdAt
+    }, ...current]);
+  }
 
   return (
     <div className="px-16 py-14 text-[#1c2431] max-[1260px]:px-[43px] max-[1260px]:py-[46px] max-[920px]:px-[22px] max-[920px]:py-8 max-[560px]:px-[14px] max-[560px]:py-6">
@@ -63,14 +84,14 @@ export function UserManagementPage() {
         icon={<UsersIcon />}
         title="Gestión de Usuarios"
         description="Gestiona cuentas de usuarios administradores y personal"
-        actions={<><button className="inline-flex min-h-[58px] items-center gap-3 rounded-xl border-0 bg-[#374357] px-7 text-xl font-extrabold whitespace-nowrap text-white shadow-[0_12px_22px_rgba(33,44,62,0.18)] max-[1260px]:min-h-[49px] max-[1260px]:px-[18px] max-[1260px]:text-[17px] max-[560px]:w-full max-[560px]:justify-center" type="button"><RefreshIcon className="h-6 w-6" /> Actualizar</button><button className="inline-flex min-h-[58px] items-center gap-3 rounded-xl border-0 bg-[linear-gradient(100deg,var(--color-brand-button-start)_0%,var(--color-brand-button-middle)_42%,var(--color-brand-button-end)_100%)] px-7 text-xl font-extrabold whitespace-nowrap text-[var(--color-brand-button-text)] shadow-[0_12px_22px_rgba(178,103,33,0.18)] max-[1260px]:min-h-[49px] max-[1260px]:px-[18px] max-[1260px]:text-[17px] max-[560px]:w-full max-[560px]:justify-center" type="button"><PlusIcon className="h-6 w-6" /> Agregar Usuario</button></>}
+        actions={<><button className="inline-flex min-h-[58px] items-center gap-3 rounded-xl border-0 bg-[#374357] px-7 text-xl font-extrabold whitespace-nowrap text-white shadow-[0_12px_22px_rgba(33,44,62,0.18)] max-[1260px]:min-h-[49px] max-[1260px]:px-[18px] max-[1260px]:text-[17px] max-[560px]:w-full max-[560px]:justify-center" type="button"><RefreshIcon className="h-6 w-6" /> Actualizar</button><button className="inline-flex min-h-[58px] items-center gap-3 rounded-xl border-0 bg-[linear-gradient(100deg,var(--color-brand-button-start)_0%,var(--color-brand-button-middle)_42%,var(--color-brand-button-end)_100%)] px-7 text-xl font-extrabold whitespace-nowrap text-[var(--color-brand-button-text)] shadow-[0_12px_22px_rgba(178,103,33,0.18)] max-[1260px]:min-h-[49px] max-[1260px]:px-[18px] max-[1260px]:text-[17px] max-[560px]:w-full max-[560px]:justify-center" type="button" onClick={() => setCreateOpen(true)}><PlusIcon className="h-6 w-6" /> Agregar Usuario</button></>}
       />
 
       <section className="mb-[39px] grid grid-cols-4 gap-7 max-[920px]:grid-cols-2 max-[560px]:grid-cols-1" aria-label="Resumen de usuarios">
-        <MetricCard value="5" label="Total de Usuarios" icon={<UsersIcon />} />
-        <MetricCard value="2" label="Administradores" icon={<ShieldIcon />} tone="danger" />
-        <MetricCard value="0" label="Miembros del Personal" icon={<UserIcon />} tone="info" />
-        <MetricCard value="5" label="Usuarios Activos" icon={<CheckCircleIcon />} tone="success" />
+        <MetricCard value={String(users.length)} label="Total de Usuarios" icon={<UsersIcon />} />
+        <MetricCard value={String(users.filter((user) => user.role === "gym_admin").length)} label="Administradores" icon={<ShieldIcon />} tone="danger" />
+        <MetricCard value={String(users.filter((user) => user.role === "receptionist").length)} label="Miembros del Personal" icon={<UserIcon />} tone="info" />
+        <MetricCard value={String(users.filter((user) => user.active).length)} label="Usuarios Activos" icon={<CheckCircleIcon />} tone="success" />
       </section>
 
       <label className="mb-[29px] flex h-[82px] w-[620px] items-center gap-4 rounded-xl border border-[#d5d9df] bg-white px-[19px] text-[#9da6af] max-[920px]:w-full">
@@ -78,13 +99,14 @@ export function UserManagementPage() {
         <input className="w-full border-0 bg-transparent text-xl text-[#1c2431] outline-0 placeholder:text-[#7a8490]" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Buscar usuarios..." />
       </label>
 
-      <DataTable caption="Listado simulado de usuarios del sistema" columns={columns} rows={users} rowKey={(user) => user.id} tableClassName="min-w-[1230px]" />
+      <DataTable caption="Listado simulado de usuarios del sistema" columns={columns} rows={filteredUsers} rowKey={(user) => user.id} tableClassName="min-w-[1230px]" />
 
       <footer className="flex min-h-[92px] flex-wrap items-center justify-between gap-6 rounded-b-[11px] border border-t-0 border-[#e1e4e8] bg-white px-[31px] py-[17px] text-[17px] text-[#4d5865]">
         <label className="inline-flex items-center gap-[10px]">Mostrar <select className="h-[45px] rounded-[10px] border border-[#d3d7dd] bg-white px-[13px] pr-[29px] font-inherit" defaultValue="10"><option value="10">10</option></select> entradas</label>
-        <p className="m-0">Mostrando 1 a 5 de 5 entradas</p>
+        <p className="m-0">Mostrando {filteredUsers.length ? 1 : 0} a {filteredUsers.length} de {users.length} entradas</p>
         <nav className="flex items-center gap-2" aria-label="Paginación de usuarios"><PaginationButton disabled>««</PaginationButton><PaginationButton disabled>«</PaginationButton><PaginationButton current>1</PaginationButton><PaginationButton disabled>»</PaginationButton><PaginationButton disabled>»»</PaginationButton></nav>
       </footer>
+      <UserCreateDialog open={createOpen} onClose={() => setCreateOpen(false)} onCreated={addUser} />
     </div>
   );
 }
