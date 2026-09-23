@@ -11,12 +11,13 @@ func TestOpenAppliesV2SchemaOnce(t *testing.T) {
 	path := filepath.Join(t.TempDir(), "gym-saas.db")
 
 	store := openTestStore(t, path)
-	assertSchemaVersion(t, store.db, 2)
+	assertSchemaVersion(t, store.db, 4)
 	assertTableExists(t, store.db, "gyms")
 	assertTableExists(t, store.db, "members")
 	assertTableExists(t, store.db, "membership_plans")
 	assertTableExists(t, store.db, "memberships")
 	assertTableExists(t, store.db, "payments")
+	assertTableExists(t, store.db, "expenses")
 	assertTableExists(t, store.db, "visits")
 	if err := store.Close(); err != nil {
 		t.Fatalf("Close returned error: %v", err)
@@ -24,7 +25,7 @@ func TestOpenAppliesV2SchemaOnce(t *testing.T) {
 
 	store = openTestStore(t, path)
 	defer store.Close()
-	assertSchemaVersion(t, store.db, 2)
+	assertSchemaVersion(t, store.db, 4)
 }
 
 func TestOpenConfiguresSQLiteReliability(t *testing.T) {
@@ -67,7 +68,7 @@ func TestApplyMigrationsRollsBackOnFailure(t *testing.T) {
 	defer store.Close()
 
 	err := applyMigrations(context.Background(), store.db, append(migrations, migration{
-		Version: 3,
+		Version: 5,
 		Name:    "broken",
 		SQL: `
 CREATE TABLE rollback_probe (id TEXT PRIMARY KEY);
@@ -78,7 +79,7 @@ THIS IS NOT VALID SQL;
 		t.Fatal("applyMigrations succeeded for invalid SQL")
 	}
 
-	assertSchemaVersion(t, store.db, 2)
+	assertSchemaVersion(t, store.db, 4)
 	assertTableMissing(t, store.db, "rollback_probe")
 }
 
@@ -117,7 +118,7 @@ func TestOpenMigratesLegacyProofDatabase(t *testing.T) {
 
 	store := openTestStore(t, path)
 	defer store.Close()
-	assertSchemaVersion(t, store.db, 2)
+	assertSchemaVersion(t, store.db, 4)
 	assertTableExists(t, store.db, "hello_records")
 	assertTableExists(t, store.db, "members")
 }
@@ -154,7 +155,7 @@ INSERT INTO membership_plans (
 
 	store := openTestStore(t, path)
 	defer store.Close()
-	assertSchemaVersion(t, store.db, 2)
+	assertSchemaVersion(t, store.db, 4)
 	var durationValue, visitLimit int
 	if err := store.db.QueryRow(`SELECT duration_value, COALESCE(visit_limit, 0) FROM membership_plans WHERE id = ?`, planID).Scan(&durationValue, &visitLimit); err != nil {
 		t.Fatalf("load migrated plan: %v", err)

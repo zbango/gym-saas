@@ -38,9 +38,17 @@ var operationalCoreSQL string
 //go:embed migrations/002_visit_plan_expiry.sql
 var visitPlanExpirySQL string
 
+//go:embed migrations/003_expenses.sql
+var expensesSQL string
+
+//go:embed migrations/004_repair_payment_membership_foreign_key.sql
+var paymentMembershipForeignKeySQL string
+
 var migrations = []migration{
 	{Version: 1, Name: "v2_operational_core", SQL: operationalCoreSQL},
 	{Version: 2, Name: "visit_plan_expiry", SQL: visitPlanExpirySQL},
+	{Version: 3, Name: "expenses", SQL: expensesSQL},
+	{Version: 4, Name: "repair_payment_membership_foreign_key", SQL: paymentMembershipForeignKeySQL},
 }
 
 type Store struct {

@@ -3,6 +3,7 @@ import { MemberListPage } from "../members/MemberListPage";
 import { MembershipPlanListPage } from "../plans/MembershipPlanListPage";
 import { UserManagementPage } from "../users/UserManagementPage";
 import { SettingsPage } from "../settings/SettingsPage";
+import { FinancialPage } from "../financial/FinancialPage";
 import type { UserRole } from "../auth/mockAuth";
 import { DashboardHomePage } from "./DashboardHomePage";
 import { canAccessRoute, type DashboardRoute } from "./navigation";
@@ -11,6 +12,7 @@ const routeViews: Readonly<Record<string, ComponentType>> = {
   dashboard: DashboardHomePage,
   members: MemberListPage,
   plans: MembershipPlanListPage,
+  "membership-payments": FinancialPage,
   users: UserManagementPage,
   settings: SettingsPage
 };

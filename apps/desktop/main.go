@@ -47,11 +47,28 @@ func main() {
 	if err := store.EnsureGym(context.Background(), localGym); err != nil {
 		log.Fatal(err)
 	}
-	memberService, err := application.NewMemberService(dbsqlite.NewMemberRepository(store), defaultGymID, time.Now)
+	memberRepository := dbsqlite.NewMemberRepository(store)
+	planRepository := dbsqlite.NewMembershipPlanRepository(store)
+	membershipRepository := dbsqlite.NewMembershipRepository(store)
+	paymentRepository := dbsqlite.NewPaymentRepository(store)
+	expenseRepository := dbsqlite.NewExpenseRepository(store)
+	memberService, err := application.NewMemberService(memberRepository, defaultGymID, time.Now)
 	if err != nil {
 		log.Fatal(err)
 	}
-	planService, err := application.NewMembershipPlanService(dbsqlite.NewMembershipPlanRepository(store), defaultGymID, time.Now)
+	planService, err := application.NewMembershipPlanService(planRepository, defaultGymID, time.Now)
+	if err != nil {
+		log.Fatal(err)
+	}
+	purchaseService, err := application.NewMembershipPurchaseService(memberRepository, planRepository, dbsqlite.NewMembershipPaymentWriter(store), localGym, time.Now)
+	if err != nil {
+		log.Fatal(err)
+	}
+	paymentService, err := application.NewPaymentService(memberRepository, membershipRepository, paymentRepository, defaultGymID, time.Now)
+	if err != nil {
+		log.Fatal(err)
+	}
+	expenseService, err := application.NewExpenseService(expenseRepository, defaultGymID, time.Now)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -64,6 +81,9 @@ func main() {
 	desktopRuntime := &DesktopRuntime{}
 	memberAPI := NewMemberAPI(desktopRuntime, memberService)
 	planAPI := NewMembershipPlanAPI(desktopRuntime, planService)
+	purchaseAPI := NewMembershipPurchaseAPI(desktopRuntime, purchaseService)
+	paymentAPI := NewPaymentAPI(desktopRuntime, paymentService)
+	expenseAPI := NewExpenseAPI(desktopRuntime, expenseService)
 	desktopAPI := NewDesktopAPI(desktopRuntime, updater.NewClient(desktopVersion), desktopVersion)
 
 	err = wails.Run(&options.App{
@@ -77,6 +97,9 @@ func main() {
 		Bind: []any{
 			memberAPI,
 			planAPI,
+			purchaseAPI,
+			paymentAPI,
+			expenseAPI,
 			desktopAPI,
 		},
 	})
